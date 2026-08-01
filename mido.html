@@ -1,0 +1,2689 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Mido — التقسيط والجمعيات</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Mido">
+  <meta name="theme-color" content="#14261E">
+  <meta name="description" content="تطبيق إدارة التقسيط والجمعيات — يعمل بدون إنترنت">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #F2F5F2;
+      --card: #FDFEFD;
+      --border: #E2E8E3;
+      --ink: #20302A;
+      --muted: #6C7B73;
+      --pine: #14261E;
+      --pine-2: #1C352A;
+      --mint: #A9C3B6;
+      --primary: #2F7D5B;
+      --primary-dark: #1E5A40;
+      --primary-tint: #E4F1EA;
+      --amber: #B07E33;
+      --amber-tint: #F8EEDD;
+      --danger: #B45858;
+      --danger-tint: #F9E9E9;
+      --blue: #4C7D9B;
+      --blue-tint: #E8F1F6;
+      --radius: 12px;
+      --shadow: 0 1px 2px rgba(20, 38, 30, .05), 0 6px 20px rgba(20, 38, 30, .05);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Tajawal', sans-serif;
+      color: var(--ink);
+      font-size: 15px;
+      background:
+        radial-gradient(900px 520px at 88% -10%, rgba(47, 125, 91, .08), transparent 60%),
+        radial-gradient(760px 480px at -12% 105%, rgba(176, 126, 51, .07), transparent 60%),
+        var(--bg);
+      background-attachment: fixed;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    h1,
+    h2,
+    h3,
+    .kpi-value,
+    .brand-text strong,
+    .turn-badge {
+      font-family: 'Cairo', 'Tajawal', sans-serif
+    }
+
+    .num {
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum"
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(8px)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    @keyframes popIn {
+      from {
+        opacity: 0;
+        transform: scale(.96) translateY(10px)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    @keyframes slideDown {
+      from {
+        transform: translateY(-30px);
+        opacity: 0
+      }
+
+      to {
+        transform: none;
+        opacity: 1
+      }
+    }
+
+    @keyframes toastUp {
+      from {
+        transform: translate(-50%, 20px);
+        opacity: 0
+      }
+
+      to {
+        transform: translate(-50%, 0);
+        opacity: 1
+      }
+    }
+
+    .login-wrapper {
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(700px 400px at 80% 10%, rgba(47, 125, 91, .25), transparent 60%),
+        radial-gradient(600px 400px at 10% 90%, rgba(176, 126, 51, .15), transparent 60%),
+        var(--pine);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 16px
+    }
+
+    .login-wrapper[hidden] {
+      display: none
+    }
+
+    .login-card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 32px 26px;
+      width: 100%;
+      max-width: 390px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, .35);
+      text-align: center;
+      animation: popIn .35s ease
+    }
+
+    .brand-mark {
+      width: 48px;
+      height: 48px;
+      border-radius: 13px;
+      background: linear-gradient(135deg, #37906A, #1E5A40);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font: 800 22px 'Cairo';
+      flex-shrink: 0;
+      box-shadow: 0 6px 16px rgba(47, 125, 91, .35)
+    }
+
+    .login-card .brand-mark {
+      margin: 0 auto 14px
+    }
+
+    .login-card h2 {
+      margin: 0 0 6px;
+      font-size: 19px;
+      font-weight: 800
+    }
+
+    .login-card p {
+      margin: 0 0 20px;
+      color: var(--muted);
+      font-size: 13px
+    }
+
+    .login-card .form-group {
+      text-align: right
+    }
+
+    .app {
+      display: flex;
+      min-height: 100vh
+    }
+
+    .sidebar {
+      width: 252px;
+      flex-shrink: 0;
+      background: linear-gradient(180deg, var(--pine), var(--pine-2));
+      color: var(--mint);
+      display: flex;
+      flex-direction: column;
+      padding: 22px 14px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      z-index: 20;
+      transition: transform .25s ease
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 8px 18px;
+      border-bottom: 1px solid rgba(255, 255, 255, .08);
+      margin-bottom: 14px
+    }
+
+    .brand .brand-mark {
+      width: 38px;
+      height: 38px;
+      font-size: 18px
+    }
+
+    .brand-text strong {
+      display: block;
+      color: #fff;
+      font-size: 15.5px
+    }
+
+    .brand-text small {
+      color: var(--mint);
+      font-size: 11px
+    }
+
+    .nav {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      flex: 1;
+      overflow-y: auto
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: none;
+      border: none;
+      color: var(--mint);
+      text-align: right;
+      padding: 11px 12px;
+      border-radius: 9px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 14.5px;
+      font-weight: 500;
+      transition: background .15s, color .15s, box-shadow .15s;
+      width: 100%
+    }
+
+    .nav-item:hover {
+      background: rgba(255, 255, 255, .06);
+      color: #fff
+    }
+
+    .nav-item.active {
+      background: rgba(47, 125, 91, .35);
+      color: #fff;
+      font-weight: 700;
+      box-shadow: inset -3px 0 0 #4CAF87
+    }
+
+    .nav-icon {
+      font-size: 15px;
+      width: 18px;
+      text-align: center;
+      opacity: .9
+    }
+
+    .nav-badge {
+      margin-right: auto;
+      background: var(--danger);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 1px 8px;
+      border-radius: 10px
+    }
+
+    #change-password-nav {
+      display: none;
+      margin-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, .1);
+      padding-top: 14px
+    }
+
+    #change-password-nav.show {
+      display: flex
+    }
+
+    .sidebar-footer {
+      padding-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px
+    }
+
+    .btn-new {
+      width: 100%;
+      background: linear-gradient(180deg, #37906A, #2A7355);
+      color: #fff;
+      border: none;
+      padding: 11px;
+      border-radius: 9px;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 13.5px;
+      cursor: pointer;
+      transition: .15s;
+      box-shadow: 0 4px 12px rgba(47, 125, 91, .3)
+    }
+
+    .btn-new:hover {
+      filter: brightness(1.06)
+    }
+
+    .btn-secondary-action {
+      width: 100%;
+      background: rgba(255, 255, 255, .07);
+      color: var(--mint);
+      border: 1px solid rgba(255, 255, 255, .12);
+      padding: 8px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 12px;
+      cursor: pointer;
+      transition: .15s;
+      text-align: center
+    }
+
+    .btn-secondary-action:hover {
+      color: #fff;
+      border-color: rgba(255, 255, 255, .3)
+    }
+
+    .btn-logout {
+      color: #E8A0A0;
+      border-color: rgba(180, 88, 88, .35)
+    }
+
+    .btn-logout:hover {
+      color: #FF8F8F
+    }
+
+    .content {
+      flex: 1;
+      padding: 26px 34px 70px;
+      max-width: 1200px;
+      width: 100%
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 22px
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 18px;
+      cursor: pointer;
+      color: var(--ink)
+    }
+
+    .topbar h1 {
+      font-size: 23px;
+      margin: 0;
+      font-weight: 800
+    }
+
+    .topbar-date {
+      color: var(--muted);
+      font-size: 13px
+    }
+
+    .view {
+      display: block;
+      animation: fadeUp .28s ease
+    }
+
+    .view[hidden] {
+      display: none
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 22px
+    }
+
+    .kpi-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow);
+      transition: transform .18s, box-shadow .18s
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(20, 38, 30, .06), 0 12px 28px rgba(20, 38, 30, .08)
+    }
+
+    .kpi-label {
+      font-size: 12.5px;
+      color: var(--muted);
+      font-weight: 700;
+      margin-bottom: 8px
+    }
+
+    .kpi-value {
+      font-size: 26px;
+      font-weight: 900;
+      line-height: 1.1
+    }
+
+    .kpi-value.amber {
+      color: var(--amber)
+    }
+
+    .kpi-value.danger {
+      color: var(--danger)
+    }
+
+    .kpi-value.primary {
+      color: var(--primary)
+    }
+
+    .kpi-sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+      overflow: hidden
+    }
+
+    .panel-header {
+      padding: 15px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px
+    }
+
+    .panel-header h2 {
+      font-size: 15.5px;
+      margin: 0;
+      font-weight: 800
+    }
+
+    .panel-body {
+      padding: 6px 0
+    }
+
+    .row-list {
+      display: flex;
+      flex-direction: column
+    }
+
+    .row-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 13px 20px;
+      border-bottom: 1px solid var(--border);
+      transition: background .12s;
+      animation: fadeUp .3s both
+    }
+
+    .row-item:last-child {
+      border-bottom: none
+    }
+
+    .row-item:hover {
+      background: #F7FAF7
+    }
+
+    .row-main {
+      flex: 1;
+      min-width: 0
+    }
+
+    .row-title {
+      font-weight: 700;
+      font-size: 14px
+    }
+
+    .row-sub {
+      font-size: 12.5px;
+      color: var(--muted);
+      margin-top: 3px
+    }
+
+    .row-amount {
+      font-weight: 800;
+      font-size: 14.5px;
+      white-space: nowrap
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 11px;
+      border-radius: 20px;
+      font-size: 11.5px;
+      font-weight: 700;
+      white-space: nowrap
+    }
+
+    .pill-ok {
+      background: var(--primary-tint);
+      color: var(--primary-dark)
+    }
+
+    .pill-warn {
+      background: var(--amber-tint);
+      color: var(--amber)
+    }
+
+    .pill-danger {
+      background: var(--danger-tint);
+      color: var(--danger)
+    }
+
+    .pill-muted {
+      background: #EEF1EE;
+      color: var(--muted)
+    }
+
+    .pill-partial {
+      background: #FFF3E0;
+      color: #B06A10
+    }
+
+    .pill-soon {
+      background: var(--blue-tint);
+      color: var(--blue)
+    }
+
+    .inst-track {
+      display: flex;
+      gap: 3px;
+      align-items: center
+    }
+
+    .inst-seg {
+      height: 8px;
+      flex: 1;
+      border-radius: 3px;
+      background: #E4E9E4;
+      transition: background .3s
+    }
+
+    .inst-seg.paid {
+      background: var(--primary)
+    }
+
+    .inst-seg.overdue {
+      background: var(--danger)
+    }
+
+    .inst-seg.partial {
+      background: var(--amber)
+    }
+
+    .btn {
+      font-family: inherit;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: .15s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px
+    }
+
+    .btn-primary {
+      background: linear-gradient(180deg, #37906A, #2A7355);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(47, 125, 91, .25)
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.06)
+    }
+
+    .btn-primary:active {
+      transform: scale(.97)
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--ink);
+      border: 1px solid var(--border)
+    }
+
+    .btn-outline:hover {
+      background: #F3F6F3
+    }
+
+    .btn-danger-text {
+      background: transparent;
+      color: var(--danger)
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 12px
+    }
+
+    .btn:disabled {
+      opacity: .5;
+      cursor: not-allowed
+    }
+
+    .search-input {
+      font-family: inherit;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 13.5px;
+      width: 240px;
+      background: #fff
+    }
+
+    .search-input:focus {
+      outline: 2px solid var(--primary);
+      outline-offset: -1px
+    }
+
+    .summary-box {
+      background: #F7FAF7;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 12px 14px
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      padding: 4px 0;
+      color: var(--muted)
+    }
+
+    .summary-row.highlight {
+      font-weight: 800;
+      color: var(--primary-dark);
+      border-top: 1px dashed var(--border);
+      margin-top: 4px;
+      padding-top: 8px;
+      font-size: 14px
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--muted)
+    }
+
+    .empty-state .empty-icon {
+      font-size: 32px;
+      margin-bottom: 8px;
+      opacity: .6
+    }
+
+    .empty-state p {
+      margin: 4px 0;
+      font-size: 13.5px
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(20, 38, 30, .5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 16px;
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px)
+    }
+
+    .modal-backdrop[hidden] {
+      display: none
+    }
+
+    .modal {
+      background: #fff;
+      border-radius: 14px;
+      width: 100%;
+      max-width: 520px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 24px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, .28);
+      animation: popIn .25s ease
+    }
+
+    .modal h2 {
+      margin: 0 0 16px;
+      font-size: 17px;
+      font-weight: 800
+    }
+
+    .modal-close-row {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+      flex-wrap: wrap
+    }
+
+    .form-group {
+      margin-bottom: 14px
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 5px
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      font-family: inherit;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 9px 12px;
+      font-size: 14px;
+      background: #fff;
+      color: var(--ink)
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: 2px solid var(--primary);
+      outline-offset: -1px
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px
+    }
+
+    .form-hint {
+      font-size: 11.5px;
+      color: var(--muted);
+      margin-top: 4px
+    }
+
+    .form-error {
+      background: var(--danger-tint);
+      color: var(--danger);
+      padding: 9px 12px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      margin-bottom: 14px
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--pine);
+      color: #fff;
+      padding: 11px 22px;
+      border-radius: 9px;
+      font-size: 13.5px;
+      font-weight: 600;
+      z-index: 200;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .3);
+      max-width: 90%;
+      text-align: center;
+      animation: toastUp .25s ease
+    }
+
+    .toast[hidden] {
+      display: none
+    }
+
+    .inapp-notification {
+      position: fixed;
+      top: 70px;
+      right: 20px;
+      left: 20px;
+      max-width: 420px;
+      margin: 0 auto;
+      padding: 14px 18px;
+      border-radius: 12px;
+      box-shadow: 0 6px 24px rgba(0, 0, 0, .25);
+      z-index: 300;
+      font-size: 14px;
+      animation: slideDown .3s ease;
+      color: #fff
+    }
+
+    .inapp-notification.info {
+      background: var(--primary)
+    }
+
+    .inapp-notification.warning {
+      background: var(--amber)
+    }
+
+    .inapp-notification.danger {
+      background: var(--danger)
+    }
+
+    .inapp-notification.success {
+      background: var(--primary-dark)
+    }
+
+    .profile-head {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 18px
+    }
+
+    .profile-avatar {
+      width: 54px;
+      height: 54px;
+      border-radius: 15px;
+      background: linear-gradient(135deg, #37906A, #1E5A40);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font: 800 24px 'Cairo';
+      box-shadow: 0 6px 16px rgba(47, 125, 91, .3)
+    }
+
+    .profile-head-info {
+      flex: 1;
+      min-width: 180px
+    }
+
+    .profile-head-info h2 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 800
+    }
+
+    .profile-head-info .sub {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 2px
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr
+    }
+
+    .detail-item {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border)
+    }
+
+    .detail-item:nth-child(odd) {
+      border-inline-end: 1px solid var(--border)
+    }
+
+    .detail-item.wide {
+      grid-column: 1/-1
+    }
+
+    .detail-item:last-child,
+    .detail-item.wide:last-child {
+      border-bottom: none
+    }
+
+    .detail-label {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 700;
+      display: block;
+      margin-bottom: 5px
+    }
+
+    .detail-value {
+      font-size: 14.5px;
+      font-weight: 600;
+      word-break: break-word;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap
+    }
+
+    .detail-value a {
+      color: var(--primary-dark);
+      text-decoration: none
+    }
+
+    .ends-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      padding: 16px 20px
+    }
+
+    .inst-end-card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      background: #FBFCFB;
+      position: relative;
+      overflow: hidden;
+      transition: transform .18s, box-shadow .18s
+    }
+
+    .inst-end-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow)
+    }
+
+    .inst-end-card::before {
+      content: '';
+      position: absolute;
+      inset-inline-start: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: var(--muted)
+    }
+
+    .inst-end-card.ok::before {
+      background: var(--primary)
+    }
+
+    .inst-end-card.partial::before {
+      background: var(--amber)
+    }
+
+    .inst-end-card.danger::before {
+      background: var(--danger)
+    }
+
+    .inst-end-card.soon::before {
+      background: var(--blue)
+    }
+
+    .inst-end-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px
+    }
+
+    .inst-end-label {
+      font-size: 12.5px;
+      font-weight: 800;
+      color: var(--muted)
+    }
+
+    .inst-end-product {
+      font-family: 'Cairo';
+      font-weight: 800;
+      font-size: 15px
+    }
+
+    .inst-end-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 14px;
+      margin-top: 12px
+    }
+
+    .inst-end-grid span {
+      display: block;
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 600
+    }
+
+    .inst-end-grid b {
+      font-size: 13.5px
+    }
+
+    .ends-empty {
+      grid-column: 1/-1;
+      text-align: center;
+      color: var(--muted);
+      padding: 20px;
+      font-size: 13.5px
+    }
+
+    .turn-badge {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--pine);
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 800;
+      flex-shrink: 0
+    }
+
+    .round-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px
+    }
+
+    .round-table th,
+    .round-table td {
+      padding: 8px 10px;
+      text-align: center;
+      border-bottom: 1px solid var(--border)
+    }
+
+    .round-table th {
+      color: var(--muted);
+      font-weight: 700;
+      background: #F7FAF7
+    }
+
+    .round-table td.member-name {
+      text-align: right;
+      font-weight: 600;
+      min-width: 110px
+    }
+
+    .pay-dot {
+      width: 26px;
+      height: 26px;
+      border-radius: 7px;
+      border: none;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 800;
+      background: #EEF1EE;
+      color: var(--muted);
+      transition: .15s
+    }
+
+    .pay-dot:hover {
+      transform: scale(1.12)
+    }
+
+    .pay-dot.paid {
+      background: var(--primary);
+      color: #fff
+    }
+
+    .pay-dot.overdue-cell {
+      background: var(--danger-tint);
+      color: var(--danger);
+      border: 1px solid var(--danger)
+    }
+
+    .payout-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border)
+    }
+
+    .payout-row:last-child {
+      border-bottom: none
+    }
+
+    .overlay-drawer {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .4);
+      z-index: 15
+    }
+
+    .overlay-drawer.open {
+      display: block
+    }
+
+    .install-banner {
+      display: none;
+      background: linear-gradient(180deg, #37906A, #2A7355);
+      color: #fff;
+      padding: 12px 16px;
+      text-align: center;
+      font-weight: 700;
+      cursor: pointer;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      border: none;
+      font-family: inherit;
+      font-size: 14px;
+      box-shadow: 0 -4px 12px rgba(0, 0, 0, .2)
+    }
+
+    .install-banner.show {
+      display: block
+    }
+
+    @media (max-width:820px) {
+      .app {
+        flex-direction: column
+      }
+
+      .sidebar {
+        position: fixed;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        transform: translateX(100%);
+        box-shadow: -5px 0 25px rgba(0, 0, 0, .3)
+      }
+
+      .sidebar.open {
+        transform: translateX(0)
+      }
+
+      .mobile-menu-btn {
+        display: inline-flex
+      }
+
+      .content {
+        padding: 16px 16px 50px
+      }
+
+      .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px
+      }
+
+      .search-input {
+        width: 100%
+      }
+
+      .form-row,
+      .details-grid,
+      .ends-grid {
+        grid-template-columns: 1fr
+      }
+
+      .detail-item:nth-child(odd) {
+        border-inline-end: none
+      }
+
+      .row-item {
+        flex-wrap: wrap;
+        gap: 8px
+      }
+
+      .row-amount {
+        margin-right: auto
+      }
+
+      .modal {
+        padding: 16px
+      }
+
+      .inapp-notification {
+        top: 60px;
+        right: 10px;
+        left: 10px;
+        font-size: 13px;
+        padding: 12px 14px
+      }
+    }
+
+    @media (max-width:480px) {
+      .kpi-card {
+        padding: 12px
+      }
+
+      .kpi-value {
+        font-size: 19px
+      }
+
+      .row-item {
+        padding: 10px 12px
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <button class="install-banner" id="install-banner">📱 ثبّت التطبيق على هاتفك</button>
+
+  <div class="login-wrapper" id="activation-screen" hidden>
+    <div class="login-card">
+      <div class="brand-mark">M</div>
+      <h2>تفعيل التطبيق</h2>
+      <p>التطبيق محتاج تفعيل قبل الاستخدام</p>
+      <div id="activation-error"></div>
+      <div class="form-group">
+        <label>كود جهازك (ابعته لصاحب التطبيق)</label>
+        <div style="display:flex;gap:8px;">
+          <input type="text" id="device-code-display" readonly dir="ltr"
+            style="font-family:monospace;font-size:16px;text-align:center;letter-spacing:1px;">
+          <button class="btn btn-outline" id="copy-device-code-btn" type="button">نسخ</button>
+        </div>
+      </div>
+      <p style="font-size:12.5px;color:var(--muted);margin:10px 0 18px;line-height:1.6">ابعت الكود لصاحب التطبيق
+        وهيبعتلك كود تفعيل تكتبه تحت.</p>
+      <div class="form-group">
+        <label>كود التفعيل</label>
+        <input type="text" id="activation-code-input" placeholder="XXXX-XXXX" dir="ltr"
+          style="font-family:monospace;text-align:center;letter-spacing:1px;">
+      </div>
+      <button class="btn btn-primary" id="activate-btn" style="width:100%;padding:11px;margin-top:6px;">تفعيل</button>
+    </div>
+  </div>
+
+  <div class="login-wrapper" id="login-screen" hidden>
+    <div class="login-card">
+      <div class="brand-mark">M</div>
+      <h2>تسجيل الدخول</h2>
+      <p>أدخل اسم المستخدم وكلمة المرور للمتابعة</p>
+      <div id="login-error"></div>
+      <div class="form-group"><label>اسم المستخدم</label><input type="text" id="login-username" placeholder="admin"
+          dir="ltr"></div>
+      <div class="form-group"><label>كلمة المرور</label><input type="password" id="login-password"
+          placeholder="••••••••" dir="ltr"></div>
+      <button class="btn btn-primary" id="login-btn" style="width:100%;padding:11px;margin-top:6px;">دخول</button>
+    </div>
+  </div>
+
+  <div class="overlay-drawer" id="drawer-overlay"></div>
+  <div class="app" id="app-container">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <span class="brand-mark">M</span>
+        <div class="brand-text"><strong>Mido App</strong><small>التقسيط والجمعيات — أوفلاين</small></div>
+      </div>
+      <nav class="nav">
+        <button class="nav-item active" data-view="dashboard"><span class="nav-icon">◈</span> الرئيسية</button>
+        <button class="nav-item" data-view="customers"><span class="nav-icon">◎</span> العملاء</button>
+        <button class="nav-item" data-view="plans"><span class="nav-icon">▤</span> خطط التقسيط</button>
+        <button class="nav-item" data-view="circles"><span class="nav-icon">◔</span> الجمعيات</button>
+        <button class="nav-item" data-view="overdue"><span class="nav-icon">!</span> المتأخرات <span class="nav-badge"
+            id="overdue-badge" hidden>0</span></button>
+        <button class="nav-item" data-view="collection-months"><span class="nav-icon">📊</span> تحصيل الشهور <span
+            class="nav-badge" id="collection-months-badge" hidden>0</span></button>
+        <button class="nav-item" id="change-password-nav"><span class="nav-icon">🔑</span> تغيير بيانات الدخول</button>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="btn-new" id="global-new-plan">+ خطة تقسيط جديدة</button>
+        <button class="btn-secondary-action" id="backup-btn">💾 نسخة احتياطية</button>
+        <button class="btn-secondary-action" id="share-backup-btn">📤 مشاركة نسخة احتياطية</button>
+        <button class="btn-secondary-action" id="saved-files-btn">📂 الملفات المحفوظة</button>
+        <button class="btn-secondary-action" id="restore-btn">📂 استرجاع البيانات</button>
+        <button class="btn-secondary-action" id="control-number-btn">📱 رقم التحكم</button>
+        <button class="btn-secondary-action" id="daily-summary-btn">📊 إرسال تقرير اليوم</button>
+        <button class="btn-secondary-action btn-logout" id="logout-btn">🚪 تسجيل الخروج</button>
+        <input type="file" id="import-file" accept=".mido,.json" style="display:none">
+      </div>
+    </aside>
+    <main class="content">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="mobile-menu-btn" id="toggle-sidebar">☰</button>
+          <h1 id="view-title">الرئيسية</h1>
+        </div>
+        <div class="topbar-date" id="topbar-date"></div>
+      </header>
+      <section id="view-dashboard" class="view"></section>
+      <section id="view-customers" class="view" hidden></section>
+      <section id="view-customer-profile" class="view" hidden></section>
+      <section id="view-plans" class="view" hidden></section>
+      <section id="view-circles" class="view" hidden></section>
+      <section id="view-overdue" class="view" hidden></section>
+      <section id="view-collection-months" class="view" hidden></section>
+    </main>
+  </div>
+  <div class="modal-backdrop" id="modal-backdrop" hidden>
+    <div class="modal" id="modal"></div>
+  </div>
+  <div class="toast" id="toast" hidden></div>
+
+  <script>
+    // ================= PWA =================
+    function makeIcon(size) {
+      const c = document.createElement('canvas'); c.width = c.height = size;
+      const x = c.getContext('2d');
+      const g = x.createLinearGradient(0, 0, size, size);
+      g.addColorStop(0, '#37906A'); g.addColorStop(1, '#14261E');
+      x.fillStyle = g;
+      if (x.roundRect) { x.beginPath(); x.roundRect(0, 0, size, size, size * 0.22); x.fill(); }
+      else x.fillRect(0, 0, size, size);
+      x.fillStyle = '#fff'; x.font = '800 ' + (size * 0.52) + 'px Cairo, sans-serif';
+      x.textAlign = 'center'; x.textBaseline = 'middle';
+      x.fillText('M', size / 2, size / 2 + size * 0.03);
+      return c.toDataURL('image/png');
+    }
+    (function setupPWA() {
+      const icon512 = makeIcon(512), icon192 = makeIcon(192);
+      const manifest = {
+        name: 'Mido — التقسيط والجمعيات', short_name: 'Mido', start_url: '.', scope: '.',
+        display: 'standalone', orientation: 'portrait', dir: 'rtl', lang: 'ar',
+        background_color: '#F2F5F2', theme_color: '#14261E',
+        icons: [{ src: icon192, sizes: '192x192', type: 'image/png', purpose: 'any' },
+        { src: icon512, sizes: '512x512', type: 'image/png', purpose: 'any maskable' }]
+      };
+      const link = document.createElement('link'); link.rel = 'manifest';
+      link.href = URL.createObjectURL(new Blob([JSON.stringify(manifest)], { type: 'application/json' }));
+      document.head.appendChild(link);
+      const ap = document.createElement('link'); ap.rel = 'apple-touch-icon'; ap.href = icon192; document.head.appendChild(ap);
+    })();
+    let deferredPrompt;
+    const installBanner = document.getElementById('install-banner');
+    const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+    window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt = e; installBanner.textContent = '📱 ثبّت التطبيق على هاتفك'; installBanner.classList.add('show'); });
+    if (isIOS && !isStandalone) { installBanner.textContent = '📱 للتثبيت على الآيفون: زر المشاركة ⬆ ثم "إضافة إلى الشاشة الرئيسية"'; installBanner.classList.add('show'); }
+    installBanner.addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt(); const r = await deferredPrompt.userChoice;
+        showToast(r.outcome === 'accepted' ? '✅ تم تثبيت التطبيق' : '❌ تم إلغاء التثبيت');
+        deferredPrompt = null; installBanner.classList.remove('show');
+      }
+      else if (isIOS) { showToast('اضغط زر المشاركة ⬆ ثم "إضافة إلى الشاشة الرئيسية"'); }
+    });
+    window.addEventListener('appinstalled', () => { installBanner.classList.remove('show'); showToast('🎉 شكراً لتثبيت التطبيق!'); });
+
+    // ================= التفعيل =================
+    const MIDO_ACTIVATION_SECRET = "Mido-Kareem-2026-Xyq7-SecretKey";
+    function getOrCreateDeviceCode() {
+      let code = localStorage.getItem('mido_device_code');
+      if (!code) {
+        const b = new Uint8Array(6); crypto.getRandomValues(b);
+        code = Array.from(b).map(x => x.toString(16).padStart(2, '0')).join('').toUpperCase().match(/.{1,4}/g).join('-');
+        localStorage.setItem('mido_device_code', code);
+      }
+      return code;
+    }
+    async function computeExpectedActivationCode(deviceCode) {
+      const data = new TextEncoder().encode(deviceCode + MIDO_ACTIVATION_SECRET);
+      const h = await crypto.subtle.digest('SHA-256', data);
+      return Array.from(new Uint8Array(h)).map(x => x.toString(16).padStart(2, '0')).join('').toUpperCase().slice(0, 8).match(/.{1,4}/g).join('-');
+    }
+    const normalizeCode = c => (c || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+    const isActivated = () => localStorage.getItem('mido_activated') === '1';
+    async function initActivationScreen() {
+      const deviceCode = getOrCreateDeviceCode();
+      document.getElementById('device-code-display').value = deviceCode;
+      document.getElementById('copy-device-code-btn').addEventListener('click', () => {
+        navigator.clipboard.writeText(deviceCode).then(() => showToast('تم نسخ كود الجهاز'))
+          .catch(() => { document.getElementById('device-code-display').select(); showToast('حدد الكود وانسخه يدويًا'); });
+      });
+      async function submit() {
+        const errBox = document.getElementById('activation-error'); errBox.innerHTML = '';
+        const entered = normalizeCode(document.getElementById('activation-code-input').value);
+        const expected = normalizeCode(await computeExpectedActivationCode(deviceCode));
+        if (entered && entered === expected) {
+          localStorage.setItem('mido_activated', '1'); showToast('تم تفعيل التطبيق بنجاح');
+          document.getElementById('activation-screen').hidden = true; checkAuth();
+        } else errBox.innerHTML = '<div class="form-error">❌ كود التفعيل غير صحيح</div>';
+      }
+      document.getElementById('activate-btn').addEventListener('click', submit);
+      document.getElementById('activation-code-input').addEventListener('keydown', e => { if (e.key === 'Enter') submit(); });
+    }
+    function checkActivation() {
+      if (isActivated()) { document.getElementById('activation-screen').hidden = true; checkAuth(); }
+      else {
+        document.getElementById('login-screen').hidden = true; document.getElementById('app-container').style.display = 'none';
+        document.getElementById('activation-screen').hidden = false; initActivationScreen();
+      }
+    }
+
+    // ================= الدخول =================
+    let ADMIN_USER = localStorage.getItem('mido_admin_username') || "admin";
+    let ADMIN_PASS = localStorage.getItem('mido_admin_password') || "admin123";
+    function checkAuth() {
+      const loginScreen = document.getElementById('login-screen'), appContainer = document.getElementById('app-container'),
+        changePassBtn = document.getElementById('change-password-nav');
+      if (sessionStorage.getItem('mido_admin_logged') === 'true') {
+        loginScreen.hidden = true; appContainer.style.display = 'flex'; changePassBtn.classList.add('show');
+        setTimeout(sendWhatsAppNotifications, 3000); setTimeout(checkDueInstallments, 5000);
+      } else { loginScreen.hidden = false; appContainer.style.display = 'none'; changePassBtn.classList.remove('show'); }
+    }
+    document.getElementById('login-btn').addEventListener('click', () => {
+      const user = document.getElementById('login-username').value.trim(), pass = document.getElementById('login-password').value.trim(),
+        errBox = document.getElementById('login-error');
+      if (user === ADMIN_USER && pass === ADMIN_PASS) {
+        sessionStorage.setItem('mido_admin_logged', 'true'); checkAuth();
+        document.getElementById('login-username').value = ''; document.getElementById('login-password').value = '';
+        errBox.innerHTML = ''; showToast('تم تسجيل الدخول بنجاح'); loadDashboard();
+      } else errBox.innerHTML = '<div class="form-error">❌ اسم المستخدم أو كلمة المرور غير صحيحة</div>';
+    });
+    ['login-password', 'login-username'].forEach(id => document.getElementById(id).addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('login-btn').click(); }));
+    document.getElementById('logout-btn').addEventListener('click', () => {
+      if (confirm('هل أنت متأكد من تسجيل الخروج؟')) { sessionStorage.removeItem('mido_admin_logged'); checkAuth(); showToast('تم تسجيل الخروج'); }
+    });
+
+    document.getElementById('change-password-nav').addEventListener('click', () => { openChangeCredentialsModal(); closeDrawer(); });
+    function openChangeCredentialsModal() {
+      openModal(`
+  <h2>🔑 تغيير بيانات الدخول</h2><div id="change-cred-error"></div>
+  <div class="form-group"><label>اسم المستخدم الحالي</label><input type="text" value="${esc(ADMIN_USER)}" readonly dir="ltr" style="background:#F3F6F3;"></div>
+  <div class="form-group"><label>اسم المستخدم الجديد</label><input type="text" id="new-username" dir="ltr"><div class="form-hint">اتركه فارغاً إذا لم تريد التغيير</div></div>
+  <hr style="border-color:var(--border);margin:16px 0;">
+  <div class="form-group"><label>كلمة السر الحالية *</label><input type="password" id="old-password" dir="ltr"></div>
+  <div class="form-group"><label>كلمة السر الجديدة</label><input type="password" id="new-password" dir="ltr"><div class="form-hint">اتركها فارغة إذا لم تريد التغيير (4 أحرف على الأقل)</div></div>
+  <div class="form-group"><label>تأكيد كلمة السر الجديدة</label><input type="password" id="confirm-password" dir="ltr"></div>
+  <div class="modal-close-row"><button class="btn btn-outline" onclick="closeModal()">إلغاء</button><button class="btn btn-primary" id="save-credentials-btn">حفظ التغيير</button></div>`);
+      document.getElementById('save-credentials-btn').addEventListener('click', () => {
+        const oldPass = document.getElementById('old-password').value.trim(),
+          newUsername = document.getElementById('new-username').value.trim(),
+          newPass = document.getElementById('new-password').value.trim(),
+          confirmPass = document.getElementById('confirm-password').value.trim(),
+          errBox = document.getElementById('change-cred-error');
+        if (oldPass !== ADMIN_PASS) { errBox.innerHTML = '<div class="form-error">❌ كلمة السر الحالية غير صحيحة</div>'; return; }
+        let changes = [];
+        if (newUsername && newUsername !== ADMIN_USER) { ADMIN_USER = newUsername; localStorage.setItem('mido_admin_username', newUsername); changes.push('اسم المستخدم'); }
+        if (newPass) {
+          if (newPass.length < 4) { errBox.innerHTML = '<div class="form-error">❌ كلمة السر قصيرة جداً (4 أحرف على الأقل)</div>'; return; }
+          if (newPass !== confirmPass) { errBox.innerHTML = '<div class="form-error">❌ كلمة السر غير مطابقة للتأكيد</div>'; return; }
+          if (newPass === oldPass) { errBox.innerHTML = '<div class="form-error">❌ كلمة السر الجديدة يجب أن تختلف عن القديمة</div>'; return; }
+          ADMIN_PASS = newPass; localStorage.setItem('mido_admin_password', newPass); changes.push('كلمة السر');
+        }
+        if (!changes.length) { errBox.innerHTML = '<div class="form-error">❌ لم تقم بتغيير أي شيء</div>'; return; }
+        closeModal(); showToast('✅ تم تغيير ' + changes.join(' و ') + ' بنجاح');
+        sessionStorage.removeItem('mido_admin_logged'); checkAuth();
+      });
+    }
+
+    function showInAppNotification(message, type = 'info', duration = 8000) {
+      const colors = { info: 'var(--primary)', warning: 'var(--amber)', danger: 'var(--danger)', success: 'var(--primary-dark)' };
+      const icons = { info: '📢', warning: '⚠️', danger: '🚨', success: '✅' };
+      const titles = { info: 'إشعار', warning: 'تنبيه', danger: 'مهم', success: 'تم بنجاح' };
+      const n = document.createElement('div'); n.className = 'inapp-notification ' + type; n.style.background = colors[type];
+      n.innerHTML = '<div style="display:flex;align-items:center;gap:10px;"><span style="font-size:20px;">' + icons[type] + '</span>' +
+        '<div style="flex:1;"><div style="font-weight:700;margin-bottom:4px;">' + titles[type] + '</div>' +
+        '<div style="font-weight:400;font-size:13px;opacity:.95;white-space:pre-line;">' + esc(message) + '</div></div>' +
+        '<button onclick="this.parentElement.parentElement.remove()" style="background:none;border:none;color:#fff;font-size:18px;cursor:pointer;">✕</button></div>';
+      document.body.appendChild(n);
+      setTimeout(() => { if (n.parentElement) { n.style.opacity = '0'; n.style.transition = 'opacity .3s'; setTimeout(() => n.remove(), 300); } }, duration);
+    }
+
+    async function checkDueInstallments() {
+      try {
+        const installments = await db.getAll('installments'), plans = await db.getAll('plans'), customers = await db.getAll('customers');
+        const today = todayStr();
+        const two = new Date(); two.setDate(two.getDate() + 2); const twoStr = toLocalISO(two);
+        const dueSoon = installments.filter(i => !i.paid && i.due_date >= today && i.due_date <= twoStr);
+        const overdue = installments.filter(i => !i.paid && i.due_date < today);
+        const partial = installments.filter(i => !i.paid && (i.remaining_balance || 0) > 0);
+        for (const inst of dueSoon) {
+          const plan = plans.find(p => p.id === inst.plan_id), cust = customers.find(c => c.id === (plan ? plan.customer_id : null));
+          if (!cust) continue;
+          showInAppNotification('📌 ' + cust.name + '\nقسط ' + (plan ? plan.product_name : '') + '\nالمبلغ: ' + fmt(inst.amount) + ' ج.م\nيستحق: ' + inst.due_date, 'warning', 10000);
+        }
+        if (overdue.length > 0) showInAppNotification('🚨 يوجد ' + overdue.length + ' أقساط متأخرة!\nإجمالي المتأخر: ' + fmt(overdue.reduce((s, i) => s + i.amount - (i.paid_amount || 0), 0)) + ' ج.م\nراجع صفحة المتأخرات', 'danger', 12000);
+        if (partial.length > 0) {
+          let msg = '📊 رصيد معلق:\n';
+          partial.slice(0, 3).forEach(i => {
+            const plan = plans.find(p => p.id === i.plan_id); const cust = customers.find(c => c.id === (plan ? plan.customer_id : null));
+            if (cust) msg += '• ' + cust.name + ': متبقي ' + fmt(i.remaining_balance) + ' ج.م\n';
+          });
+          if (partial.length > 3) msg += 'و ' + (partial.length - 3) + ' أخرى...';
+          showInAppNotification(msg, 'info', 10000);
+        }
+        updateOverdueBadge(overdue.length);
+      } catch (err) { console.log('⚠️ خطأ في فحص الأقساط:', err); }
+    }
+    setInterval(checkDueInstallments, 6 * 60 * 60 * 1000);
+
+    // ====================================================================
+    // ★★★ محرك التخزين الذكي — IndexedDB مع fallback لـ localStorage ★★★
+    // بيحاول IndexedDB الأول، ولو المتصفح رفضه (فتح ملف محلي / وضع متخفي /
+    // قيود خصوصية) بيقع تلقائياً على تخزين بديل بنفس الـ API بالظبط.
+    // النتيجة: التطبيق مش هيفشل في فتح قاعدة البيانات تاني أبداً.
+    // ====================================================================
+    class LocalDB {
+      constructor() { this.dbName = 'MidoOfflineAppDB'; this.version = 3; this.db = null; this.useLocalStorage = false; }
+      _stores() { return ['customers', 'plans', 'installments', 'circles', 'circle_members', 'circle_payments', 'circle_payouts', 'collection_months']; }
+      _k(s) { return 'mido_ls_' + s; }
+      _sk(s) { return 'mido_ls_seq_' + s; }
+      _lsAll(s) { try { return JSON.parse(localStorage.getItem(this._k(s)) || '[]'); } catch (e) { return []; } }
+      _lsSave(s, a) { try { localStorage.setItem(this._k(s), JSON.stringify(a)); return true; } catch (e) { console.warn('⚠️ localStorage ممتلئ/مقيد', e); return false; } }
+      _lsId(s) { const n = parseInt(localStorage.getItem(this._sk(s)) || '0', 10) + 1; localStorage.setItem(this._sk(s), String(n)); return n; }
+      _fallback(reason) {
+        if (this.useLocalStorage) return;
+        this.useLocalStorage = true; this.db = null;
+        console.warn('⚠️ IndexedDB غير متاح (' + (reason && reason.message || reason || 'غير معروف') + ') — تم تفعيل التخزين البديل عبر localStorage.');
+        if (sessionStorage.getItem('mido_ls_notice') !== '1') {
+          sessionStorage.setItem('mido_ls_notice', '1');
+          setTimeout(() => showToast('⚠️ وضع التخزين البديل مفعّل — التطبيق شغال عادي'), 700);
+        }
+      }
+      open() {
+        if (this.useLocalStorage) return Promise.resolve('ls');
+        if (this.db) return Promise.resolve(this.db);
+        if (!window.indexedDB) { this._fallback('المتصفح لا يدعم IndexedDB'); return Promise.resolve('ls'); }
+        return new Promise((resolve) => {
+          let req;
+          try { req = indexedDB.open(this.dbName, this.version); }
+          catch (e) { this._fallback(e); return resolve('ls'); }
+          req.onerror = () => { this._fallback(req.error); resolve('ls'); };
+          req.onblocked = () => { this._fallback('قاعدة البيانات محجوبة'); resolve('ls'); };
+          req.onsuccess = () => { if (this.useLocalStorage) return resolve('ls'); this.db = req.result; resolve(this.db); };
+          req.onupgradeneeded = e => {
+            try {
+              const d = e.target.result;
+              this._stores().forEach(s => { if (d.objectStoreNames.contains(s)) d.deleteObjectStore(s); });
+              const c = d.createObjectStore('customers', { keyPath: 'id', autoIncrement: true }); c.createIndex('name', 'name', { unique: false });
+              const p = d.createObjectStore('plans', { keyPath: 'id', autoIncrement: true }); p.createIndex('customer_id', 'customer_id', { unique: false });
+              const i = d.createObjectStore('installments', { keyPath: 'id', autoIncrement: true }); i.createIndex('plan_id', 'plan_id', { unique: false }); i.createIndex('due_date', 'due_date', { unique: false });
+              d.createObjectStore('circles', { keyPath: 'id', autoIncrement: true });
+              const cm = d.createObjectStore('circle_members', { keyPath: 'id', autoIncrement: true }); cm.createIndex('circle_id', 'circle_id', { unique: false });
+              const cp = d.createObjectStore('circle_payments', { keyPath: 'id', autoIncrement: true }); cp.createIndex('circle_id', 'circle_id', { unique: false });
+              const cpo = d.createObjectStore('circle_payouts', { keyPath: 'id', autoIncrement: true }); cpo.createIndex('circle_id', 'circle_id', { unique: false });
+              const col = d.createObjectStore('collection_months', { keyPath: 'id', autoIncrement: true }); col.createIndex('month', 'month', { unique: false }); col.createIndex('customer_id', 'customer_id', { unique: false }); col.createIndex('installment_id', 'installment_id', { unique: false });
+            } catch (err) { this._fallback(err); }
+          };
+        });
+      }
+      async getAll(s) { const d = await this.open(); if (this.useLocalStorage) return this._lsAll(s); return new Promise(res => { const r = d.transaction(s, 'readonly').objectStore(s).getAll(); r.onsuccess = () => res(r.result || []); r.onerror = () => { this._fallback(r.error); res(this._lsAll(s)); }; }); }
+      async getById(s, id) { const d = await this.open(); if (this.useLocalStorage) return this._lsAll(s).find(x => x.id == id); return new Promise(res => { const r = d.transaction(s, 'readonly').objectStore(s).get(Number(id)); r.onsuccess = () => res(r.result); r.onerror = () => { this._fallback(r.error); res(this._lsAll(s).find(x => x.id == id)); }; }); }
+      async add(s, data) { const d = await this.open(); if (this.useLocalStorage) { const a = this._lsAll(s); const id = this._lsId(s); const obj = Object.assign({}, data, { id }); a.push(obj); this._lsSave(s, a); return id; } return new Promise(res => { const r = d.transaction(s, 'readwrite').objectStore(s).add(data); r.onsuccess = () => res(r.result); r.onerror = () => { this._fallback(r.error); const a = this._lsAll(s); const id = this._lsId(s); const obj = Object.assign({}, data, { id }); a.push(obj); this._lsSave(s, a); res(id); }; }); }
+      async update(s, data) { const d = await this.open(); if (this.useLocalStorage) { const a = this._lsAll(s); const i = a.findIndex(x => x.id == data.id); if (i >= 0) a[i] = data; else a.push(data); this._lsSave(s, a); return data.id; } return new Promise(res => { const r = d.transaction(s, 'readwrite').objectStore(s).put(data); r.onsuccess = () => res(r.result); r.onerror = () => { this._fallback(r.error); const a = this._lsAll(s); const i = a.findIndex(x => x.id == data.id); if (i >= 0) a[i] = data; else a.push(data); this._lsSave(s, a); res(data.id); }; }); }
+      async delete(s, id) { const d = await this.open(); if (this.useLocalStorage) { this._lsSave(s, this._lsAll(s).filter(x => x.id != id)); return; } return new Promise(res => { const r = d.transaction(s, 'readwrite').objectStore(s).delete(Number(id)); r.onsuccess = () => res(); r.onerror = () => { this._fallback(r.error); this._lsSave(s, this._lsAll(s).filter(x => x.id != id)); res(); }; }); }
+      async clearAll() { const d = await this.open(); const stores = this._stores(); if (this.useLocalStorage) { stores.forEach(s => this._lsSave(s, [])); return; } const tx = d.transaction(stores, 'readwrite'); stores.forEach(s => tx.objectStore(s).clear()); return new Promise(res => { tx.oncomplete = () => res(); tx.onerror = () => { this._fallback(tx.error); stores.forEach(s => this._lsSave(s, [])); res(); }; }); }
+    }
+    const db = new LocalDB();
+
+    // ================= أدوات مساعدة =================
+    const state = { view: 'dashboard', customers: [], plans: [], currentCustomerId: null };
+    function fmt(n) { return Number(n || 0).toLocaleString('ar-EG', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+    function toLocalISO(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+    function todayStr() { return toLocalISO(new Date()); }
+    function round2(n) { return Math.round(n * 100) / 100; }
+    function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])); }
+    function showToast(msg) {
+      const t = document.getElementById('toast'); t.textContent = msg; t.hidden = false;
+      clearTimeout(showToast._timer); showToast._timer = setTimeout(() => t.hidden = true, 2600);
+    }
+    function closeModal() { document.getElementById('modal-backdrop').hidden = true; document.getElementById('modal').innerHTML = ''; }
+    function openModal(html) { document.getElementById('modal').innerHTML = html; document.getElementById('modal-backdrop').hidden = false; }
+    document.getElementById('modal-backdrop').addEventListener('click', e => { if (e.target.id === 'modal-backdrop') closeModal(); });
+    function debounce(fn, ms) { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; }
+    function emptyRow(msg) { return '<div class="empty-state"><div class="empty-icon">◎</div><p>' + msg + '</p></div>'; }
+    function lsBannerHtml() {
+      if (!db.useLocalStorage) return '';
+      return `<div id="ls-fallback-banner" style="display:flex;align-items:flex-start;gap:12px;background:var(--amber-tint);border:1px solid var(--amber);border-radius:12px;padding:14px 16px;margin-bottom:18px;box-shadow:var(--shadow);animation:fadeUp .3s ease;">
+    <span style="font-size:22px;line-height:1;">⚠️</span>
+    <div style="flex:1;font-size:13px;color:#8a5a14;line-height:1.75;">
+      <b>وضع التخزين البديل مفعّل.</b> متصفحك أو طريقة فتح الملف مش بتدعم قاعدة البيانات المحلية، فالتطبيق بيحفظ بياناتك في تخزين بديل شغّال تمام. لأفضل أداء وثبات، افتح التطبيق من رابط استضافة (زي Netlify) بدل فتح الملف مباشرة.
+    </div>
+    <button onclick="this.closest('#ls-fallback-banner').remove()" style="background:none;border:none;color:var(--amber);font-size:18px;cursor:pointer;line-height:1;">✕</button>
+  </div>`;
+    }
+    function installmentStatus(i, today) {
+      if (i.paid) return { label: 'مدفوع', cls: 'ok', icon: '✅' };
+      if ((i.paid_amount || 0) > 0) return { label: 'مدفوع جزئياً', cls: 'partial', icon: '🟡' };
+      if (i.due_date < today) return { label: 'متأخر', cls: 'danger', icon: '🔴' };
+      return { label: 'قادم', cls: 'soon', icon: '⏳' };
+    }
+
+    // ================= التنقل =================
+    const sidebar = document.getElementById('sidebar'), drawerOverlay = document.getElementById('drawer-overlay');
+    function closeDrawer() { sidebar.classList.remove('open'); drawerOverlay.classList.remove('open'); }
+    document.getElementById('toggle-sidebar').addEventListener('click', () => { sidebar.classList.toggle('open'); drawerOverlay.classList.toggle('open'); });
+    drawerOverlay.addEventListener('click', closeDrawer);
+    const titles = {
+      dashboard: 'الرئيسية', customers: 'العملاء', 'customer-profile': 'ملف العميل', plans: 'خطط التقسيط',
+      circles: 'الجمعيات', overdue: 'المتأخرات', 'collection-months': 'تحصيل الشهور'
+    };
+    document.querySelectorAll('.nav-item:not(#change-password-nav)').forEach(btn => {
+      btn.addEventListener('click', () => { switchView(btn.dataset.view); closeDrawer(); });
+    });
+    function switchView(view) {
+      state.view = view;
+      const navView = view === 'customer-profile' ? 'customers' : view;
+      document.querySelectorAll('.nav-item:not(#change-password-nav)').forEach(b => b.classList.toggle('active', b.dataset.view === navView));
+      document.querySelectorAll('.view').forEach(v => v.hidden = true);
+      document.getElementById('view-title').textContent = titles[view] || view;
+      document.getElementById('view-' + view).hidden = false;
+      if (view === 'dashboard') loadDashboard();
+      else if (view === 'customers') loadCustomers();
+      else if (view === 'plans') loadPlans();
+      else if (view === 'circles') loadCircles();
+      else if (view === 'overdue') loadOverdue();
+      else if (view === 'collection-months') loadCollectionMonths();
+      else if (view === 'customer-profile' && state.currentCustomerId) renderCustomerProfile(state.currentCustomerId);
+    }
+    document.getElementById('global-new-plan').addEventListener('click', () => { openPlanForm(); closeDrawer(); });
+    function updateOverdueBadge(count) {
+      const badge = document.getElementById('overdue-badge'), nav = document.querySelector('[data-view="overdue"]');
+      badge.hidden = count <= 0; badge.textContent = count;
+      if (nav) nav.style.color = count > 0 ? '#FF9B9B' : '';
+    }
+    async function updateCollectionBadge() {
+      try {
+        const cols = await db.getAll('collection_months');
+        const badge = document.getElementById('collection-months-badge'), nav = document.querySelector('[data-view="collection-months"]');
+        badge.hidden = cols.length <= 0; badge.textContent = cols.length;
+        if (nav) nav.style.color = cols.length > 0 ? '#F5D78E' : '';
+      } catch (err) { console.log('⚠️', err); }
+    }
+
+    // ================= الرئيسية =================
+    async function loadDashboard() {
+      const el = document.getElementById('view-dashboard');
+      el.innerHTML = '<p style="color:var(--muted)">جاري التحميل...</p>';
+      try {
+        const customers = await db.getAll('customers'), plans = await db.getAll('plans'),
+          installments = await db.getAll('installments'), collectionMonths = await db.getAll('collection_months');
+        const today = todayStr();
+        const seven = new Date(); seven.setDate(seven.getDate() + 7); const sevenStr = toLocalISO(seven);
+        let totalOutstanding = 0, overdueCount = 0, overdueAmount = 0, dueSoonCount = 0, dueSoonAmount = 0,
+          collectedThisMonth = 0, totalCollected = 0, partialPayments = 0;
+        const currentMonth = today.substring(0, 7), upcoming = [];
+        collectionMonths.forEach(col => { if (col.month === currentMonth) collectedThisMonth += col.amount; });
+        installments.forEach(inst => {
+          const plan = plans.find(p => p.id === inst.plan_id), cust = customers.find(c => c && c.id === (plan ? plan.customer_id : null));
+          const custName = cust ? cust.name : 'عميل غير معروف', custPhone = cust ? cust.phone : '', prodName = plan ? plan.product_name : '';
+          if (inst.paid) { totalCollected += inst.paid_amount || inst.amount; }
+          else {
+            const remaining = inst.amount - (inst.paid_amount || 0);
+            totalOutstanding += remaining;
+            if ((inst.paid_amount || 0) > 0) partialPayments++;
+            if (inst.due_date < today) {
+              overdueCount++; overdueAmount += remaining;
+              upcoming.push({ ...inst, customer_name: custName, product_name: prodName, phone: custPhone, remaining });
+            }
+            else if (inst.due_date <= sevenStr) {
+              dueSoonCount++; dueSoonAmount += remaining;
+              upcoming.push({ ...inst, customer_name: custName, product_name: prodName, phone: custPhone, remaining });
+            }
+          }
+        });
+        upcoming.sort((a, b) => a.due_date.localeCompare(b.due_date));
+        updateOverdueBadge(overdueCount); await updateCollectionBadge();
+        el.innerHTML = lsBannerHtml() + `
+    <div class="kpi-grid">
+      <div class="kpi-card"><div class="kpi-label">عدد العملاء</div><div class="kpi-value num">${customers.length}</div></div>
+      <div class="kpi-card"><div class="kpi-label">خطط نشطة</div><div class="kpi-value num primary">${plans.length}</div></div>
+      <div class="kpi-card"><div class="kpi-label">إجمالي المستحق</div><div class="kpi-value num">${fmt(totalOutstanding)}</div><div class="kpi-sub">جنيه</div></div>
+      <div class="kpi-card"><div class="kpi-label">أقساط متأخرة</div><div class="kpi-value num danger">${overdueCount}</div><div class="kpi-sub">بقيمة ${fmt(overdueAmount)} ج.م</div></div>
+    </div>
+    <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr);">
+      <div class="kpi-card" style="background:var(--primary-tint);border-color:var(--primary);"><div class="kpi-label">💰 إجمالي المحصل</div><div class="kpi-value num primary">${fmt(totalCollected)}</div><div class="kpi-sub">جنيه</div></div>
+      <div class="kpi-card" style="background:var(--amber-tint);border-color:var(--amber);"><div class="kpi-label">📅 تحصيل الشهر الحالي</div><div class="kpi-value num amber">${fmt(collectedThisMonth)}</div><div class="kpi-sub">حسب الشهر المستحق</div></div>
+      <div class="kpi-card"><div class="kpi-label">⏰ مستحق خلال 7 أيام</div><div class="kpi-value num amber">${dueSoonCount}</div><div class="kpi-sub">بقيمة ${fmt(dueSoonAmount)} ج.م</div></div>
+    </div>
+    ${partialPayments > 0 ? `<div class="kpi-grid" style="grid-template-columns:1fr 1fr;">
+      <div class="kpi-card" style="background:#FFF3E0;border-color:var(--amber);"><div class="kpi-label">🔄 دفعات جزئية</div><div class="kpi-value num amber">${partialPayments}</div><div class="kpi-sub">أقساط مدفوعة جزئياً</div></div>
+      <div class="kpi-card"><div class="kpi-label">📊 سجلات تحصيل</div><div class="kpi-value num primary">${collectionMonths.length}</div><div class="kpi-sub">حسب الشهر المستحق</div></div>
+    </div>`: ''}
+    <div class="panel">
+      <div class="panel-header"><h2>أقرب الأقساط المستحقة</h2></div>
+      <div class="panel-body"><div class="row-list">
+      ${upcoming.length ? upcoming.slice(0, 10).map(i => {
+          const isOverdue = i.due_date < today, isPartial = (i.paid_amount || 0) > 0, remaining = i.remaining || i.amount;
+          return `<div class="row-item">
+          <div class="row-main">
+            <div class="row-title">${esc(i.customer_name)} — ${esc(i.product_name)}</div>
+            <div class="row-sub">قسط رقم ${i.seq} · استحقاق ${i.due_date}${i.phone ? ' · ' + esc(i.phone) : ''}${isPartial ? ' · دفع ' + fmt(i.paid_amount) + ' من ' + fmt(i.amount) : ''}</div>
+          </div>
+          <span class="pill ${isOverdue ? 'pill-danger' : (isPartial ? 'pill-partial' : 'pill-warn')}">${isOverdue ? 'متأخر' : (isPartial ? 'مدفوع جزئياً' : 'مستحق')}</span>
+          <div class="row-amount num">${fmt(remaining)} ج.م</div>
+          ${i.phone ? `<button class="btn btn-outline btn-sm" onclick="sendWhatsAppReminder('${esc(i.phone)}','${esc(i.customer_name)}','${esc(i.product_name)}',${remaining},'${i.due_date}')">📱</button>` : ''}
+          <button class="btn btn-primary btn-sm" onclick="openPaymentModal(${i.id},'dashboard')">تسجيل الدفع</button>
+        </div>`;
+        }).join('') : emptyRow('مفيش أقساط مستحقة حاليًا')}
+      </div></div>
+    </div>`;
+      } catch (err) {
+        el.innerHTML = lsBannerHtml() + `<div class="empty-state"><div class="empty-icon">⚠️</div>
+      <p style="color:var(--danger);font-weight:700;">تعذّر تحميل البيانات</p>
+      <p>${esc(err && err.message || err)}</p>
+      <p style="font-size:12.5px;max-width:340px;margin:8px auto 0;line-height:1.7;">جرّب تحديث الصفحة. لو بتفتح الملف من الموبايل مباشرة، افتحه من رابط استضافة (Netlify) عشان قاعدة البيانات تشتغل بكفاءة.</p></div>`;
+      }
+    }
+
+    // ================= العملاء =================
+    async function loadCustomers(q = '') {
+      const el = document.getElementById('view-customers');
+      el.innerHTML = `<div class="panel">
+    <div class="panel-header"><h2>العملاء</h2>
+      <div style="display:flex;gap:10px;width:100%;max-width:420px;">
+        <input class="search-input" id="customer-search" placeholder="ابحث بالاسم أو الموبايل" value="${esc(q)}">
+        <button class="btn btn-primary" id="add-customer-btn">+ عميل جديد</button>
+      </div></div>
+    <div class="panel-body"><div class="row-list" id="customers-list"><p style="padding:20px;color:var(--muted)">جاري التحميل...</p></div></div>
+  </div>`;
+      document.getElementById('add-customer-btn').addEventListener('click', () => openCustomerForm());
+      const search = document.getElementById('customer-search');
+      search.addEventListener('input', debounce(() => loadCustomers(search.value), 300));
+      try {
+        let rows = await db.getAll('customers');
+        const plans = await db.getAll('plans'), installments = await db.getAll('installments'),
+          collectionMonths = await db.getAll('collection_months'), today = todayStr();
+        if (q) { const lower = q.toLowerCase(); rows = rows.filter(c => (c.name && c.name.toLowerCase().includes(lower)) || (c.phone && c.phone.includes(q))); }
+        state.customers = rows;
+        document.getElementById('customers-list').innerHTML = rows.length ? rows.map((c, idx) => {
+          const custPlans = plans.filter(p => p.customer_id == c.id);
+          let overdueCount = 0, balanceDue = 0, partialCount = 0;
+          const totalCollected = collectionMonths.filter(col => col.customer_id === c.id).reduce((s, col) => s + col.amount, 0);
+          custPlans.forEach(p => installments.filter(i => i.plan_id == p.id).forEach(i => {
+            if (!i.paid) {
+              const rem = i.amount - (i.paid_amount || 0); balanceDue += rem;
+              if (i.due_date < today) overdueCount++; if ((i.paid_amount || 0) > 0) partialCount++;
+            }
+          }));
+          return `<div class="row-item" style="cursor:pointer;animation-delay:${Math.min(idx * 25, 300)}ms" onclick="showCustomerProfile(${c.id})">
+        <div class="row-main">
+          <div class="row-title">${esc(c.name)}</div>
+          <div class="row-sub">${esc(c.phone || 'بدون رقم')} · ${custPlans.length} خطة${partialCount > 0 ? ' · 🟡 ' + partialCount + ' دفعة جزئية' : ''}${totalCollected > 0 ? ' · 💰 محصل ' + fmt(totalCollected) : ''}</div>
+        </div>
+        ${overdueCount > 0 ? `<span class="pill pill-danger">${overdueCount} متأخر</span>` : partialCount > 0 ? '<span class="pill pill-partial">دفع جزئي</span>' : '<span class="pill pill-ok">منتظم</span>'}
+        <div class="row-amount num">${fmt(balanceDue)} ج.م</div>
+        <button class="btn btn-outline btn-sm" onclick="event.stopPropagation();openPlanForm(${c.id})">+ خطة</button>
+      </div>`;
+        }).join('') : emptyRow('مفيش عملاء لسه، ابدأ بإضافة عميل جديد');
+      } catch (err) { document.getElementById('customers-list').innerHTML = '<p style="color:var(--danger);padding:20px;">' + (err.message || err) + '</p>'; }
+    }
+
+    // ★★★ ملف العميل ★★★
+    function showCustomerProfile(id) { state.currentCustomerId = id; switchView('customer-profile'); }
+    async function renderCustomerProfile(id) {
+      const el = document.getElementById('view-customer-profile');
+      el.innerHTML = '<p style="color:var(--muted)">جاري التحميل...</p>';
+      try {
+        const c = await db.getById('customers', id);
+        if (!c) { el.innerHTML = emptyRow('العميل غير موجود'); return; }
+        const allPlans = await db.getAll('plans'), custPlans = allPlans.filter(p => p.customer_id == id);
+        const allInsts = await db.getAll('installments');
+        const custInsts = allInsts.filter(i => custPlans.some(p => p.id == i.plan_id));
+        const allCols = await db.getAll('collection_months');
+        const today = todayStr();
+        let totalPaid = 0, totalRemaining = 0, overdueTotal = 0, overdueCount = 0, partialCount = 0;
+        custInsts.forEach(i => {
+          const paidAmt = i.paid_amount || 0;
+          if (i.paid) { totalPaid += paidAmt || i.amount; }
+          else {
+            const rem = i.amount - paidAmt; totalRemaining += rem;
+            if (i.due_date < today) { overdueTotal += rem; overdueCount++; }
+            if (paidAmt > 0) partialCount++;
+          }
+        });
+        const totalCollected = allCols.filter(col => col.customer_id == id).reduce((s, col) => s + col.amount, 0);
+        const sorted = [...custInsts].sort((a, b) => a.due_date.localeCompare(b.due_date) || a.seq - b.seq);
+        const first = sorted[0], last = sorted[sorted.length - 1];
+        const planOf = i => custPlans.find(p => p.id == i.plan_id);
+        function instEndCard(i, label, icon) {
+          if (!i) return '';
+          const st = installmentStatus(i, today), plan = planOf(i), paidAmt = i.paid_amount || 0, rem = round2(i.amount - paidAmt);
+          return `<div class="inst-end-card ${st.cls}">
+        <div class="inst-end-head"><span class="inst-end-label">${icon} ${label}</span><span class="pill pill-${st.cls}">${st.icon} ${st.label}</span></div>
+        <div class="inst-end-product">${esc(plan ? plan.product_name : '—')}</div>
+        <div class="inst-end-grid">
+          <div><span>رقم القسط</span><b class="num">${i.seq} من ${plan ? plan.num_installments : '—'}</b></div>
+          <div><span>تاريخ الاستحقاق</span><b class="num">${i.due_date}</b></div>
+          <div><span>قيمة القسط</span><b class="num">${fmt(i.amount)} ج.م</b></div>
+          <div><span>المدفوع</span><b class="num" style="color:var(--primary-dark)">${fmt(i.paid ? (paidAmt || i.amount) : paidAmt)} ج.م</b></div>
+          ${!i.paid ? `<div><span>المتبقي</span><b class="num" style="color:var(--danger)">${fmt(rem)} ج.م</b></div>` : ''}
+          ${i.paid && i.paid_date ? `<div><span>تاريخ السداد</span><b class="num">${i.paid_date}</b></div>` : ''}
+        </div>
+      </div>`;
+        }
+        const overallPill = overdueCount > 0 ? '<span class="pill pill-danger">🔴 عليه متأخرات</span>' :
+          partialCount > 0 ? '<span class="pill pill-partial">🟡 دفعات جزئية</span>' : '<span class="pill pill-ok">✅ منتظم</span>';
+        const plansHtml = custPlans.length ? custPlans.map(p => {
+          const pInsts = custInsts.filter(i => i.plan_id == p.id).sort((a, b) => a.seq - b.seq);
+          const paidCount = pInsts.filter(i => i.paid).length;
+          const planPaid = pInsts.filter(i => i.paid).reduce((s, i) => s + (i.paid_amount || i.amount), 0) +
+            pInsts.filter(i => !i.paid && (i.paid_amount || 0) > 0).reduce((s, i) => s + (i.paid_amount || 0), 0);
+          const planRemaining = pInsts.filter(i => !i.paid).reduce((s, i) => s + (i.amount - (i.paid_amount || 0)), 0);
+          const segs = pInsts.map(i => {
+            let cls = 'inst-seg';
+            if (i.paid) cls += ' paid'; else if (i.due_date < today) cls += ' overdue'; else if ((i.remaining_balance || 0) > 0) cls += ' partial';
+            return '<div class="' + cls + '"></div>';
+          }).join('');
+          const rows = pInsts.map(i => {
+            const st = installmentStatus(i, today), paidAmt = i.paid_amount || 0;
+            let sub = 'استحقاق ' + i.due_date;
+            if (i.paid) {
+              sub += ' · دُفع كاملاً'; if (i.paid_date) sub += ' في ' + i.paid_date;
+              if (i.deferred_from) sub += ' · 📌 مرحل ' + fmt(i.deferred_amount) + ' من قسط ' + i.deferred_from;
+            }
+            else {
+              if ((i.remaining_balance || 0) > 0) sub += ' · ⚠️ متبقي ' + fmt(i.remaining_balance);
+              if (i.deferred_from) sub += ' · 📌 مرحل ' + fmt(i.deferred_amount) + ' من قسط ' + i.deferred_from;
+            }
+            let title = 'قسط ' + i.seq; if (i.deferred_from) title += ' 🔄';
+            return `<div class="row-item">
+          <div class="row-main"><div class="row-title">${title}</div><div class="row-sub">${sub}</div></div>
+          <span class="pill pill-${st.cls}">${st.icon} ${st.label}</span>
+          <div class="row-amount num">${fmt(i.paid ? (paidAmt || i.amount) : i.amount)} ج.م</div>
+          ${i.paid ? `<button class="btn btn-outline btn-sm" onclick="unpayFromProfile(${i.id})">تراجع</button>`
+                : `<button class="btn btn-primary btn-sm" onclick="openPaymentModal(${i.id},'customer-profile')">تسجيل الدفع</button>`}
+        </div>`;
+          }).join('');
+          return `<div class="panel" style="box-shadow:none;">
+        <div class="panel-header"><h2 style="font-size:14px;">${esc(p.product_name)}</h2>
+          <span class="pill pill-muted">${paidCount}/${pInsts.length} مدفوعة</span></div>
+        <div style="padding:12px 16px 4px;">
+          <div class="inst-track" style="margin-bottom:10px;">${segs}</div>
+          <div style="display:flex;flex-wrap:wrap;gap:16px;font-size:12.5px;color:var(--muted);margin-bottom:6px;">
+            <span>الإجمالي: <b class="num" style="color:var(--ink)">${fmt(p.total_payable || p.total_amount)} ج.م</b></span>
+            <span>مدفوع: <b class="num" style="color:var(--primary-dark)">${fmt(planPaid)} ج.م</b></span>
+            <span>باقي: <b class="num" style="color:var(--danger)">${fmt(planRemaining)} ج.م</b></span>
+          </div>
+        </div>
+        <div class="row-list">${rows}</div>
+      </div>`;
+        }).join('') : '<div class="panel"><div class="panel-body">' + emptyRow('مفيش خطط تقسيط لهذا العميل — أضف أول خطة') + '</div></div>';
+        el.innerHTML = lsBannerHtml() + `
+    <div class="profile-head">
+      <button class="btn btn-outline" onclick="switchView('customers')">↩ رجوع</button>
+      <div class="profile-avatar">${esc((c.name || '؟').charAt(0))}</div>
+      <div class="profile-head-info"><h2>${esc(c.name)}</h2><div class="sub">عميل منذ ${c.created_at || '—'} · ${custPlans.length} خطة · ${custInsts.length} قسط</div></div>
+      ${overallPill}
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi-card" style="background:var(--primary-tint);border-color:var(--primary);"><div class="kpi-label">إجمالي المدفوع</div><div class="kpi-value num primary" style="font-size:21px;">${fmt(totalPaid)}</div><div class="kpi-sub">ج.م</div></div>
+      <div class="kpi-card"><div class="kpi-label">الباقي عليه</div><div class="kpi-value num" style="font-size:21px;">${fmt(totalRemaining)}</div><div class="kpi-sub">ج.م</div></div>
+      <div class="kpi-card"><div class="kpi-label">منها متأخر</div><div class="kpi-value num danger" style="font-size:21px;">${fmt(overdueTotal)}</div><div class="kpi-sub">ج.م</div></div>
+      <div class="kpi-card" style="background:var(--amber-tint);border-color:var(--amber);"><div class="kpi-label">💰 محصل (سجل)</div><div class="kpi-value num amber" style="font-size:21px;">${fmt(totalCollected)}</div><div class="kpi-sub">ج.م</div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-header"><h2>📋 التفاصيل العامة</h2>
+        <button class="btn btn-outline btn-sm" onclick="openCustomerForm(${c.id})">✏️ تعديل البيانات</button></div>
+      <div class="details-grid">
+        <div class="detail-item"><span class="detail-label">📞 الهاتف</span>
+          <div class="detail-value">${c.phone ? `<a href="tel:${esc(c.phone)}" dir="ltr">${esc(c.phone)}</a>
+            <button class="btn btn-outline btn-sm" onclick="sendWhatsAppReminder('${esc(c.phone)}','${esc(c.name)}','حسابك',${totalRemaining},'${today}')">📱 واتساب</button>` : '—'}</div></div>
+        <div class="detail-item"><span class="detail-label">🪪 الرقم القومي</span><div class="detail-value" dir="ltr" style="text-align:right;">${esc(c.national_id) || '—'}</div></div>
+        <div class="detail-item"><span class="detail-label">📍 العنوان</span><div class="detail-value">${esc(c.address) || '—'}</div></div>
+        <div class="detail-item"><span class="detail-label">🗓 تاريخ الإضافة</span><div class="detail-value num">${c.created_at || '—'}</div></div>
+        <div class="detail-item wide"><span class="detail-label">📝 الملاحظات</span><div class="detail-value" style="white-space:pre-line;font-weight:500;">${esc(c.notes) || '—'}</div></div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-header"><h2>🎯 أول قسط وآخر قسط</h2><span class="pill pill-muted">${custInsts.length} قسط إجمالاً</span></div>
+      <div class="ends-grid">
+        ${custInsts.length ? instEndCard(first, 'أول قسط', '⬅') + instEndCard(last, 'آخر قسط', '➡') : '<div class="ends-empty">لا توجد أقساط مسجلة لهذا العميل بعد</div>'}
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:12px;">
+      <h2 style="font-size:16px;margin:0;">▤ خطط التقسيط</h2>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-primary btn-sm" onclick="openPlanForm(${c.id})">+ خطة جديدة</button>
+        <button class="btn btn-danger-text btn-sm" onclick="deleteCustomer(${c.id})">🗑️ حذف العميل</button>
+      </div>
+    </div>
+    ${plansHtml}`;
+      } catch (err) { el.innerHTML = '<p style="color:var(--danger)">' + (err.message || err) + '</p>'; }
+    }
+    async function unpayFromProfile(instId) { await revertInstallment(instId); renderCustomerProfile(state.currentCustomerId); }
+
+    function openCustomerForm(existingId) {
+      const isEdit = !!existingId;
+      (async () => {
+        const c = isEdit ? await db.getById('customers', existingId) : {};
+        openModal(`
+    <h2>${isEdit ? '✏️ تعديل بيانات العميل' : 'عميل جديد'}</h2><div id="form-error"></div>
+    <div class="form-group"><label>الاسم *</label><input id="c-name" type="text" value="${esc(c.name || '')}"></div>
+    <div class="form-row">
+      <div class="form-group"><label>الموبايل</label><input id="c-phone" type="text" value="${esc(c.phone || '')}" placeholder="0123456789"></div>
+      <div class="form-group"><label>الرقم القومي</label><input id="c-nid" type="text" value="${esc(c.national_id || '')}"></div>
+    </div>
+    <div class="form-group"><label>العنوان</label><input id="c-address" type="text" value="${esc(c.address || '')}"></div>
+    <div class="form-group"><label>ملاحظات</label><textarea id="c-notes" rows="2">${esc(c.notes || '')}</textarea></div>
+    <div class="modal-close-row"><button class="btn btn-outline" onclick="closeModal()">إلغاء</button>
+    <button class="btn btn-primary" id="save-customer-btn">حفظ</button></div>`);
+        document.getElementById('save-customer-btn').addEventListener('click', async () => {
+          const name = document.getElementById('c-name').value.trim();
+          if (!name) { document.getElementById('form-error').innerHTML = '<div class="form-error">اسم العميل مطلوب</div>'; return; }
+          try {
+            const data = {
+              name, phone: document.getElementById('c-phone').value.trim(),
+              national_id: document.getElementById('c-nid').value.trim(),
+              address: document.getElementById('c-address').value.trim(),
+              notes: document.getElementById('c-notes').value.trim()
+            };
+            if (isEdit) { data.id = existingId; data.created_at = c.created_at; await db.update('customers', data); }
+            else { data.created_at = todayStr(); await db.add('customers', data); }
+            closeModal(); showToast(isEdit ? 'تم تحديث بيانات العميل' : 'تم إضافة العميل بنجاح');
+            if (isEdit && state.view === 'customer-profile') renderCustomerProfile(existingId); else loadCustomers();
+          } catch (err) { document.getElementById('form-error').innerHTML = '<div class="form-error">' + (err.message || err) + '</div>'; }
+        });
+      })();
+    }
+    async function deleteCustomer(id) {
+      const customer = await db.getById('customers', id); if (!customer) return;
+      if (!confirm('⚠️ هل أنت متأكد من حذف العميل "' + customer.name + '"؟\nسيتم حذف كافة الخطط والأقساط المرتبطة به نهائيًا.')) return;
+      try {
+        const plans = await db.getAll('plans'), installments = await db.getAll('installments'), collectionMonths = await db.getAll('collection_months');
+        for (const col of collectionMonths.filter(c => c.customer_id === id)) await db.delete('collection_months', col.id);
+        for (const p of plans.filter(p => p.customer_id == id)) {
+          for (const inst of installments.filter(i => i.plan_id == p.id)) await db.delete('installments', inst.id);
+          await db.delete('plans', p.id);
+        }
+        await db.delete('customers', id);
+        showToast('✅ تم حذف العميل "' + customer.name + '"');
+        switchView('customers'); await updateCollectionBadge();
+      } catch (err) { showToast('❌ خطأ أثناء الحذف: ' + err.message); }
+    }
+
+    // ================= خطط التقسيط =================
+    async function loadPlans() {
+      const el = document.getElementById('view-plans');
+      el.innerHTML = `<div class="panel">
+    <div class="panel-header"><h2>خطط التقسيط</h2><button class="btn btn-primary" onclick="openPlanForm()">+ خطة جديدة</button></div>
+    <div class="panel-body"><div class="row-list" id="plans-list"><p style="padding:20px;color:var(--muted)">جاري التحميل...</p></div></div>
+  </div>`;
+      try {
+        const plans = await db.getAll('plans'), customers = await db.getAll('customers'), installments = await db.getAll('installments');
+        document.getElementById('plans-list').innerHTML = plans.length ? plans.map((p, idx) => {
+          const cust = customers.find(c => c.id == p.customer_id), pInsts = installments.filter(i => i.plan_id == p.id);
+          const paidCount = pInsts.filter(i => i.paid).length, partialCount = pInsts.filter(i => !i.paid && (i.remaining_balance || 0) > 0).length;
+          const remaining = pInsts.filter(i => !i.paid).reduce((s, i) => s + (i.amount - (i.paid_amount || 0)), 0);
+          return `<div class="row-item" style="cursor:pointer;animation-delay:${Math.min(idx * 25, 300)}ms" onclick="openPlanDetail(${p.id})">
+        <div class="row-main">
+          <div class="row-title">${esc(cust ? cust.name : 'عميل غير معروف')} — ${esc(p.product_name)}</div>
+          <div class="row-sub">${paidCount}/${pInsts.length} أقساط مدفوعة${partialCount > 0 ? ' · 🟡 ' + partialCount + ' رصيد معلق' : ''} · بدأت ${p.start_date}</div>
+          <div class="inst-track" style="margin-top:6px;max-width:220px;">${pInsts.map(i => {
+            let cls = 'inst-seg'; if (i.paid) cls += ' paid'; else if ((i.remaining_balance || 0) > 0) cls += ' partial';
+            return '<div class="' + cls + '"></div>';
+          }).join('')}</div>
+        </div>
+        <div class="row-amount num">${fmt(remaining)} ج.م متبقي</div>
+      </div>`;
+        }).join('') : emptyRow('مفيش خطط تقسيط لسه');
+      } catch (err) { document.getElementById('plans-list').innerHTML = '<p style="color:var(--danger);padding:20px;">' + (err.message || err) + '</p>'; }
+    }
+    async function openPlanForm(customerId) {
+      const customers = await db.getAll('customers');
+      const options = customers.map(c => '<option value="' + c.id + '" ' + (c.id == customerId ? 'selected' : '') + '>' + esc(c.name) + ' (' + esc(c.phone || 'بدون رقم') + ')</option>').join('');
+      openModal(`
+  <h2>خطة تقسيط جديدة</h2><div id="form-error"></div>
+  <div class="form-group"><label>العميل *</label><select id="p-customer">${options || '<option value="">لا يوجد عملاء - أضف عميل الأول</option>'}</select></div>
+  <div class="form-group"><label>اسم المنتج / السلعة *</label><input id="p-product" type="text" placeholder="مثال: تلفزيون - ثلاجة"></div>
+  <div class="form-row">
+    <div class="form-group"><label>السعر نقدًا *</label><input id="p-total" type="number" min="0"></div>
+    <div class="form-group"><label>المقدم</label><input id="p-down" type="number" min="0"></div>
+  </div>
+  <div class="form-row">
+    <div class="form-group"><label>عدد الأقساط *</label><input id="p-count" type="number" min="1"></div>
+    <div class="form-group"><label>دورية السداد (أيام)</label><input id="p-freq" type="number" min="1" value="30"></div>
+  </div>
+  <div class="form-row">
+    <div class="form-group"><label>نسبة الفايدة (%)</label><input id="p-profit" type="number" min="0" step="0.1"></div>
+    <div class="form-group"><label>تاريخ البداية *</label><input id="p-start" type="date" value="${todayStr()}"></div>
+  </div>
+  <div class="form-group"><label>تاريخ استحقاق أول قسط (لو مختلف)</label><input id="p-first-due" type="date"></div>
+  <div class="summary-box" id="p-preview" style="margin-bottom:14px;"></div>
+  <div class="modal-close-row"><button class="btn btn-outline" onclick="closeModal()">إلغاء</button>
+  <button class="btn btn-primary" id="save-plan-btn">إنشاء الخطة</button></div>`);
+      function updatePreview() {
+        const total = Number(document.getElementById('p-total').value) || 0, down = Number(document.getElementById('p-down').value) || 0,
+          n = parseInt(document.getElementById('p-count').value, 10) || 1, rate = (Number(document.getElementById('p-profit').value) || 0) / 100;
+        const preview = document.getElementById('p-preview');
+        if (total <= 0 || down >= total) { preview.innerHTML = ''; return; }
+        const base = total - down, withProfit = base * (1 + rate);
+        preview.innerHTML = '<div class="summary-row"><span>المبلغ الممول</span><span class="num">' + fmt(base) + ' ج.م</span></div>' +
+          '<div class="summary-row"><span>الفايدة</span><span class="num">' + fmt(withProfit - base) + ' ج.م</span></div>' +
+          '<div class="summary-row highlight"><span>قيمة القسط الواحد</span><span class="num">' + fmt(withProfit / n) + ' ج.م</span></div>';
+      }
+      ['p-total', 'p-down', 'p-count', 'p-profit'].forEach(id => document.getElementById(id).addEventListener('input', updatePreview));
+      updatePreview();
+      document.getElementById('save-plan-btn').addEventListener('click', async () => {
+        const errBox = document.getElementById('form-error');
+        const customer_id = document.getElementById('p-customer').value, product_name = document.getElementById('p-product').value.trim(),
+          total_amount = Number(document.getElementById('p-total').value), down_payment = Number(document.getElementById('p-down').value) || 0,
+          num_installments = parseInt(document.getElementById('p-count').value, 10),
+          frequency_days = parseInt(document.getElementById('p-freq').value, 10) || 30,
+          profit_rate = (Number(document.getElementById('p-profit').value) || 0) / 100,
+          start_date = document.getElementById('p-start').value, firstDueOverride = document.getElementById('p-first-due').value;
+        if (!customer_id || !product_name || !total_amount || !num_installments || !start_date) {
+          errBox.innerHTML = '<div class="form-error">من فضلك أكمل كل الحقول المطلوبة</div>'; return;
+        }
+        try {
+          const financedBase = total_amount - down_payment, totalPayable = financedBase * (1 + profit_rate),
+            instAmount = Math.round((totalPayable / num_installments) * 100) / 100;
+          const planId = await db.add('plans', {
+            customer_id: Number(customer_id), product_name, total_amount, down_payment,
+            num_installments, frequency_days, profit_rate, total_payable: totalPayable, start_date
+          });
+          let currDate;
+          if (firstDueOverride) { currDate = new Date(firstDueOverride + 'T12:00:00'); currDate.setDate(currDate.getDate() - frequency_days); }
+          else currDate = new Date(start_date + 'T12:00:00');
+          for (let i = 1; i <= num_installments; i++) {
+            currDate.setDate(currDate.getDate() + frequency_days);
+            await db.add('installments', {
+              plan_id: planId, seq: i, amount: instAmount, original_amount: instAmount,
+              due_date: toLocalISO(currDate), paid: false, paid_date: null, paid_amount: 0, remaining_balance: instAmount,
+              payment_history: [], has_deferred: false, deferred_from: null, deferred_amount: 0, has_outstanding_balance: false
+            });
+          }
+          closeModal(); showToast('تم إنشاء خطة التقسيط');
+          if (state.view === 'plans') loadPlans();
+          else if (state.view === 'customer-profile') renderCustomerProfile(state.currentCustomerId);
+          else if (state.view === 'dashboard') loadDashboard();
+        } catch (err) { errBox.innerHTML = '<div class="form-error">' + (err.message || err) + '</div>'; }
+      });
+    }
+    async function openPlanDetail(id) {
+      const p = await db.getById('plans', id), cust = await db.getById('customers', p.customer_id);
+      const allInsts = await db.getAll('installments'), pInsts = allInsts.filter(i => i.plan_id == id).sort((a, b) => a.seq - b.seq), today = todayStr();
+      const rows = pInsts.map(i => {
+        const st = installmentStatus(i, today), paidAmt = i.paid_amount || 0;
+        let sub = 'استحقاق ' + i.due_date;
+        if (i.paid) {
+          sub += ' · دُفع كاملاً'; if (i.paid_date) sub += ' في ' + i.paid_date;
+          if (i.deferred_from) sub += ' · 📌 مرحل ' + fmt(i.deferred_amount) + ' من قسط ' + i.deferred_from;
+        }
+        else {
+          if ((i.remaining_balance || 0) > 0) sub += ' · ⚠️ متبقي ' + fmt(i.remaining_balance);
+          if (i.deferred_from) sub += ' · 📌 مرحل ' + fmt(i.deferred_amount) + ' من قسط ' + i.deferred_from;
+        }
+        let title = 'قسط ' + i.seq; if (i.deferred_from) title += ' 🔄';
+        return `<div class="row-item">
+      <div class="row-main"><div class="row-title">${title}</div><div class="row-sub">${sub}</div></div>
+      <span class="pill pill-${st.cls}">${st.icon} ${st.label}</span>
+      <div class="row-amount num">${fmt(i.paid ? (paidAmt || i.amount) : i.amount)} ج.م</div>
+      ${i.paid ? `<button class="btn btn-outline btn-sm" onclick="unpayFromPlan(${i.id},${id})">تراجع</button>`
+            : `<button class="btn btn-primary btn-sm" onclick="openPaymentModal(${i.id},'plan-detail',${id})">تسجيل الدفع</button>`}
+    </div>`;
+      }).join('');
+      openModal(`
+  <h2>${esc(cust ? cust.name : 'عميل غير معروف')} — ${esc(p.product_name)}</h2>
+  <p style="color:var(--muted);font-size:13px;margin-bottom:14px;">الإجمالي ${fmt(p.total_amount)} ج.م · المقدم ${fmt(p.down_payment)} ج.م · بدأت ${p.start_date}</p>
+  <div class="row-list" style="border:1px solid var(--border);border-radius:9px;max-height:340px;overflow-y:auto;">${rows}</div>
+  <div class="modal-close-row"><button class="btn btn-outline" onclick="closeModal()">إغلاق</button></div>`);
+    }
+    async function unpayFromPlan(instId, planId) { await revertInstallment(instId); openPlanDetail(planId); }
+
+    // ================= الدفع =================
+    function openPaymentModal(instId, fromView, planId) {
+      openModal(`
+  <h2>💰 تسجيل الدفع</h2><div id="payment-error"></div>
+  <div class="form-group"><label>المبلغ المدفوع</label>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <input type="number" id="payment-amount" step="0.01" min="0.01" style="flex:1;">
+      <button class="btn btn-primary" id="pay-full-amount-btn" style="white-space:nowrap;">💰 دفع كامل</button>
+    </div>
+    <div class="form-hint">أدخل المبلغ المدفوع الآن، أو اضغط "دفع كامل" لتسديد القسط بالكامل</div></div>
+  <div class="form-group"><label>ملاحظات</label><textarea id="payment-note" rows="2"></textarea></div>
+  <div class="modal-close-row"><button class="btn btn-outline" onclick="closeModal()">إلغاء</button>
+  <button class="btn btn-primary" id="confirm-payment-btn">تأكيد الدفع</button></div>`);
+      (async () => {
+        const inst = await db.getById('installments', instId);
+        const rem = round2(inst.amount - (inst.paid_amount || 0));
+        const inp = document.getElementById('payment-amount'); if (inp) inp.placeholder = 'المتبقي: ' + fmt(rem) + ' ج.م';
+      })();
+      document.getElementById('pay-full-amount-btn').addEventListener('click', async () => {
+        const inst = await db.getById('installments', instId), rem = round2(inst.amount - (inst.paid_amount || 0));
+        document.getElementById('payment-amount').value = rem.toFixed(2); showToast('✅ تم تعيين المبلغ: ' + fmt(rem) + ' ج.م');
+      });
+      document.getElementById('confirm-payment-btn').addEventListener('click', async () => {
+        const amount = parseFloat(document.getElementById('payment-amount').value),
+          note = document.getElementById('payment-note').value.trim(),
+          errBox = document.getElementById('payment-error');
+        if (!amount || amount <= 0) { errBox.innerHTML = '<div class="form-error">❌ أدخل مبلغ صحيح أكبر من صفر</div>'; return; }
+        await processPartialPayment(instId, amount, note, fromView, planId);
+      });
+    }
+    async function processPartialPayment(instId, paidAmount, note, fromView, planId) {
+      try {
+        const inst = await db.getById('installments', instId), plan = await db.getById('plans', inst.plan_id),
+          cust = await db.getById('customers', plan.customer_id);
+        const alreadyPaid = inst.paid_amount || 0;
+        let remainingAfter = round2(inst.amount - (alreadyPaid + paidAmount)); if (remainingAfter < 0) remainingAfter = 0;
+        inst.payment_history = inst.payment_history || [];
+        inst.payment_history.push({ date: todayStr(), amount: paidAmount, note: note || 'دفع', remaining_after: remainingAfter });
+        inst.paid_amount = round2(alreadyPaid + paidAmount); inst.last_payment_date = todayStr();
+        await recordCollectionMonth(plan.customer_id, instId, paidAmount, inst.due_date || todayStr(), plan.id);
+        let deferredTo = null;
+        if (remainingAfter > 0) {
+          const allInsts = await db.getAll('installments');
+          const nextInst = allInsts.filter(i => i.plan_id === inst.plan_id && i.seq > inst.seq && !i.paid).sort((a, b) => a.seq - b.seq)[0];
+          if (nextInst) {
+            nextInst.amount = round2(nextInst.amount + remainingAfter);
+            nextInst.has_deferred = true; nextInst.deferred_from = inst.seq; nextInst.deferred_amount = remainingAfter;
+            await db.update('installments', nextInst); deferredTo = nextInst;
+            inst.paid = true; inst.paid_date = todayStr(); inst.remaining_balance = 0;
+          } else { inst.paid = false; inst.remaining_balance = remainingAfter; inst.has_outstanding_balance = true; }
+        } else { inst.paid = true; inst.paid_date = todayStr(); inst.remaining_balance = 0; inst.has_outstanding_balance = false; }
+        await db.update('installments', inst);
+        if (deferredTo) {
+          showToast('✅ تم دفع ' + fmt(paidAmount) + ' ج.م، وترحيل ' + fmt(remainingAfter) + ' ج.م للقسط ' + deferredTo.seq);
+          showInAppNotification('🔄 ' + (cust ? cust.name : 'عميل') + '\nتم دفع ' + fmt(paidAmount) + ' ج.م\nتم ترحيل ' + fmt(remainingAfter) + ' ج.م للقسط ' + deferredTo.seq, 'warning', 8000);
+        } else if (remainingAfter > 0) {
+          showToast('⚠️ تم دفع ' + fmt(paidAmount) + ' ج.م، باقي ' + fmt(remainingAfter) + ' ج.م رصيد معلق');
+          showInAppNotification('⚠️ ' + (cust ? cust.name : 'عميل') + '\nمتبقي ' + fmt(remainingAfter) + ' ج.م كرصيد معلق', 'warning', 8000);
+        } else {
+          showToast('✅ تم تسجيل الدفع كاملاً (' + fmt(paidAmount) + ' ج.م)');
+          showInAppNotification('✅ ' + (cust ? cust.name : 'عميل') + '\nتم دفع ' + fmt(paidAmount) + ' ج.م بالكامل\n' + (plan ? plan.product_name : ''), 'success');
+        }
+        await updateCollectionBadge(); closeModal();
+        if (fromView === 'plans') loadPlans();
+        else if (fromView === 'overdue') loadOverdue();
+        else if (fromView === 'plan-detail') openPlanDetail(planId || inst.plan_id);
+        else if (fromView === 'customer-profile') renderCustomerProfile(state.currentCustomerId);
+        else loadDashboard();
+      } catch (err) { showToast('❌ خطأ أثناء تسجيل الدفع: ' + err.message); }
+    }
+    async function revertInstallment(instId) {
+      try {
+        const inst = await db.getById('installments', instId);
+        const allCols = await db.getAll('collection_months');
+        for (const col of allCols.filter(c => c.installment_id === instId)) await db.delete('collection_months', col.id);
+        const allInsts = await db.getAll('installments');
+        const child = allInsts.find(i => i.plan_id === inst.plan_id && i.deferred_from === inst.seq);
+        if (child && (child.deferred_amount || 0) > 0) {
+          if (child.paid) showToast('⚠️ القسط المرحَّل إليه مدفوع بالفعل — راجع يدوياً');
+          else {
+            child.amount = round2(child.amount - child.deferred_amount);
+            child.has_deferred = false; child.deferred_from = null; child.deferred_amount = 0;
+            await db.update('installments', child);
+          }
+        }
+        inst.paid = false; inst.paid_date = null; inst.paid_amount = 0; inst.remaining_balance = inst.amount;
+        inst.payment_history = [];
+        await db.update('installments', inst);
+        await updateCollectionBadge(); showToast('تم التراجع عن الدفع');
+        if (state.view === 'dashboard') loadDashboard();
+      } catch (err) { showToast(err.message || err); }
+    }
+
+    // ================= المتأخرات =================
+    async function loadOverdue() {
+      const el = document.getElementById('view-overdue');
+      el.innerHTML = `<div class="panel"><div class="panel-header"><h2>الأقساط المتأخرة</h2></div>
+    <div class="panel-body"><div class="row-list" id="overdue-list"><p style="padding:20px;color:var(--muted)">جاري التحميل...</p></div></div></div>`;
+      try {
+        const installments = await db.getAll('installments'), plans = await db.getAll('plans'), customers = await db.getAll('customers'), today = todayStr();
+        const overdue = [];
+        installments.forEach(i => {
+          if (!i.paid && i.due_date < today) {
+            const plan = plans.find(p => p.id == i.plan_id), cust = customers.find(c => c.id === (plan ? plan.customer_id : null));
+            overdue.push({
+              ...i, customer_name: cust ? cust.name : 'عميل غير معروف', product_name: plan ? plan.product_name : '',
+              phone: cust ? cust.phone : '', remaining: i.amount - (i.paid_amount || 0), is_partial: (i.paid_amount || 0) > 0
+            });
+          }
+        });
+        overdue.sort((a, b) => a.due_date.localeCompare(b.due_date));
+        updateOverdueBadge(overdue.length);
+        document.getElementById('overdue-list').innerHTML = overdue.length ? overdue.map(i => `
+      <div class="row-item">
+        <div class="row-main">
+          <div class="row-title">${esc(i.customer_name)} — ${esc(i.product_name)}</div>
+          <div class="row-sub">قسط رقم ${i.seq} · كان مستحق ${i.due_date}${i.phone ? ' · ' + esc(i.phone) : ''}${i.is_partial ? ' · 🟡 دفع ' + fmt(i.paid_amount) + ' من ' + fmt(i.amount) : ''}</div>
+        </div>
+        <span class="pill ${i.is_partial ? 'pill-partial' : 'pill-danger'}">${i.is_partial ? 'مدفوع جزئياً' : 'متأخر'}</span>
+        <div class="row-amount num">${fmt(i.remaining)} ج.م</div>
+        ${i.phone ? `<button class="btn btn-outline btn-sm" onclick="sendWhatsAppReminder('${esc(i.phone)}','${esc(i.customer_name)}','${esc(i.product_name)}',${i.remaining},'${i.due_date}')">📱</button>` : ''}
+        <button class="btn btn-primary btn-sm" onclick="openPaymentModal(${i.id},'overdue')">تسجيل الدفع</button>
+      </div>`).join('') : emptyRow('تمام، مفيش أقساط متأخرة حاليًا 🎉');
+      } catch (err) { document.getElementById('overdue-list').innerHTML = '<p style="color:var(--danger);padding:20px;">' + (err.message || err) + '</p>'; }
+    }
+
+    // ================= تحصيل الشهور =================
+    async function recordCollectionMonth(customerId, installmentId, amount, dueDate, planId) {
+      const month = (dueDate || todayStr()).substring(0, 7);
+      const allCols = await db.getAll('collection_months');
+      const existing = allCols.find(c => c.customer_id === customerId && c.month === month && c.installment_id === installmentId);
+      if (existing) { existing.amount = (existing.amount || 0) + amount; await db.update('collection_months', existing); }
+      else await db.add('collection_months', {
+        customer_id: customerId, installment_id: installmentId, plan_id: planId,
+        month, amount, due_date: dueDate, collected_at: todayStr(), is_full: false
+      });
+      await updateCollectionBadge();
+    }
+    async function deleteCollectionRecord(id) {
+      if (!confirm('⚠️ هل أنت متأكد من حذف سجل التحصيل هذا؟')) return;
+      try {
+        await db.delete('collection_months', id); showToast('✅ تم حذف السجل');
+        await updateCollectionBadge(); loadCollectionMonths();
+      } catch (err) { showToast('❌ ' + err.message); }
+    }
+    async function clearAllCollectionRecords() {
+      if (!confirm('⚠️ هل أنت متأكد من مسح كل سجلات التحصيل؟ لا يمكن التراجع.')) return;
+      try {
+        const all = await db.getAll('collection_months');
+        for (const col of all) await db.delete('collection_months', col.id);
+        showToast('✅ تم مسح كل سجلات التحصيل'); await updateCollectionBadge(); loadCollectionMonths();
+      } catch (err) { showToast('❌ ' + err.message); }
+    }
+    async function loadCollectionMonths() {
+      const el = document.getElementById('view-collection-months');
+      el.innerHTML = '<p style="color:var(--muted)">جاري التحميل...</p>';
+      try {
+        const allCols = await db.getAll('collection_months'), customers = await db.getAll('customers'), plans = await db.getAll('plans');
+        if (!allCols.length) { el.innerHTML = emptyRow('مفيش تحصيلات مسجلة حسب الشهر حتى الآن'); return; }
+        const months = {}; allCols.forEach(col => { if (!months[col.month]) months[col.month] = []; months[col.month].push(col); });
+        const sortedMonths = Object.keys(months).sort().reverse();
+        const grandTotal = Object.values(months).flat().reduce((s, i) => s + i.amount, 0);
+        let html = lsBannerHtml() + `<div class="panel"><div class="panel-header"><h2>📊 تحصيل الأقساط حسب الشهر المستحق</h2>
+      <span class="pill pill-muted">${allCols.length} سجل</span></div><div class="panel-body">
+      <div class="summary-box" style="margin:12px 16px;background:var(--primary-tint);border-color:var(--primary);">
+        <div class="summary-row highlight" style="font-size:16px;"><span>💰 إجمالي التحصيل الكلي</span>
+        <span class="num" style="color:var(--primary-dark);">${fmt(grandTotal)} ج.م</span></div></div>`;
+        for (const month of sortedMonths) {
+          const items = months[month], totalMonth = items.reduce((s, i) => s + i.amount, 0);
+          html += `<div class="panel" style="margin:12px 16px;border:2px solid var(--primary-tint);">
+        <div class="panel-header" style="background:var(--primary-tint);border-bottom:2px solid var(--primary);">
+          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+            <h2 style="font-size:15px;">📅 ${month}</h2>
+            <span class="pill pill-ok" style="font-size:14px;padding:4px 14px;">💰 ${fmt(totalMonth)} ج.م</span>
+            <span class="pill pill-muted">${items.length} عملية</span></div></div>
+        <div class="panel-body"><div class="row-list">`;
+          for (const item of items) {
+            const cust = customers.find(c => c.id === item.customer_id), plan = plans.find(p => p.id === item.plan_id);
+            html += `<div class="row-item">
+          <div class="row-main"><div class="row-title">${esc(cust ? cust.name : 'عميل غير معروف')}</div>
+          <div class="row-sub">${esc(plan ? plan.product_name : '')} · قسط ${item.due_date || ''}</div></div>
+          <span class="pill pill-ok">${fmt(item.amount)} ج.م</span>
+          <button class="btn btn-outline btn-sm" onclick="deleteCollectionRecord(${item.id})">🗑️</button></div>`;
+          }
+          html += '</div></div></div>';
+        }
+        html += '</div></div><div style="text-align:center;padding:10px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">' +
+          '<button class="btn btn-danger-text" onclick="clearAllCollectionRecords()">🗑️ مسح كل السجلات</button>' +
+          '<button class="btn btn-primary" onclick="exportCollectionMonths()">📤 تصدير التقرير</button></div>';
+        el.innerHTML = html; await updateCollectionBadge();
+      } catch (err) { el.innerHTML = '<p style="color:var(--danger)">' + (err.message || err) + '</p>'; }
+    }
+    async function exportCollectionMonths() {
+      try {
+        const allCols = await db.getAll('collection_months'), customers = await db.getAll('customers'), plans = await db.getAll('plans');
+        if (!allCols.length) { showToast('📭 مفيش بيانات للتصدير'); return; }
+        const months = {}; allCols.forEach(col => { if (!months[col.month]) months[col.month] = []; months[col.month].push(col); });
+        let report = '📊 تقرير تحصيل الأقساط حسب الشهر المستحق\n📅 ' + todayStr() + '\n' + '='.repeat(45) + '\n';
+        let grandTotal = 0;
+        Object.keys(months).sort().forEach(month => {
+          const items = months[month], totalMonth = items.reduce((s, i) => s + i.amount, 0); grandTotal += totalMonth;
+          report += '\n📅 ' + month + '\n💰 الإجمالي: ' + fmt(totalMonth) + ' ج.م\n' + '-'.repeat(20) + '\n';
+          items.forEach(item => {
+            const cust = customers.find(c => c.id === item.customer_id), plan = plans.find(p => p.id === item.plan_id);
+            report += '  • ' + (cust ? cust.name : 'عميل غير معروف') + ' - ' + (plan ? plan.product_name : '') + ': ' + fmt(item.amount) + ' ج.م\n';
+          });
+        });
+        report += '\n' + '='.repeat(45) + '\n💰 الإجمالي الكلي: ' + fmt(grandTotal) + ' ج.م\n';
+        if (navigator.share) {
+          try {
+            const file = new File([report], 'تقرير_التحصيل_' + todayStr() + '.txt', { type: 'text/plain' });
+            await navigator.share({ files: [file], title: '📊 تقرير التحصيل', text: report });
+            showToast('✅ تم مشاركة التقرير'); return;
+          }
+          catch (e) { if (e.name === 'AbortError') { showToast('❌ تم إلغاء المشاركة'); return; } }
+        }
+        const ta = document.createElement('textarea'); ta.value = report; document.body.appendChild(ta);
+        ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+        showToast('✅ تم نسخ التقرير');
+      } catch (err) { showToast('❌ ' + err.message); }
+    }
+
+    // ================= واتساب =================
+    function normalizePhoneForWhatsapp(phone) {
+      if (!phone) return ''; let p = phone.replace(/[^0-9+]/g, '');
+      if (p.startsWith('+')) return p.slice(1);
+      if (p.startsWith('00')) return p.slice(2);
+      if (p.startsWith('0')) return '2' + p;
+      return p;
+    }
+    function sendWhatsAppReminder(phone, customerName, productName, amount, dueDate) {
+      const message = 'مرحباً ' + customerName + ' 👋\nتذكير بخصوص قسط "' + productName + '"\nالمبلغ المستحق: ' + fmt(amount) + ' ج.م\nتاريخ الاستحقاق: ' + dueDate + '\nمن فضلك تواصل معنا لترتيب السداد.\nشكراً - Mido';
+      const waPhone = normalizePhoneForWhatsapp(phone);
+      if (!waPhone) { showToast('❌ رقم الموبايل غير صحيح'); return; }
+      window.open('https://wa.me/' + waPhone + '?text=' + encodeURIComponent(message), '_system');
+    }
+    async function sendWhatsAppNotifications() {
+      try {
+        const installments = await db.getAll('installments'), today = todayStr();
+        const overdue = installments.filter(i => !i.paid && i.due_date < today);
+        if (overdue.length > 0) console.log('📱 يوجد ' + overdue.length + ' أقساط متأخرة');
+      } catch (err) { console.log('⚠️', err); }
+    }
+
+    // ================= رقم التحكم والتقرير =================
+    const getControlNumber = () => localStorage.getItem('mido_control_number') || '';
+    const setControlNumber = p => localStorage.setItem('mido_control_number', p);
+    async function buildDetailedReport() {
+      const installments = await db.getAll('installments'), plans = await db.getAll('plans'),
+        customers = await db.getAll('customers'), collectionMonths = await db.getAll('collection_months'), today = todayStr();
+      let totalPaid = 0, totalPending = 0, totalOverdue = 0;
+      const overdueList = [], dueTodayList = [], dueSoonList = [], partialList = [], monthTotals = {};
+      collectionMonths.forEach(col => { monthTotals[col.month] = (monthTotals[col.month] || 0) + col.amount; });
+      const three = new Date(); three.setDate(three.getDate() + 3); const threeStr = toLocalISO(three);
+      for (const inst of installments) {
+        const remaining = inst.amount - (inst.paid_amount || 0);
+        const plan = plans.find(p => p.id === inst.plan_id), cust = customers.find(c => c.id === (plan ? plan.customer_id : null));
+        const info = {
+          customer: cust ? cust.name : 'غير معروف', product: plan ? plan.product_name : '', amount: remaining,
+          due_date: inst.due_date, phone: cust ? cust.phone : '', seq: inst.seq
+        };
+        if (inst.paid) { totalPaid += inst.paid_amount || inst.amount; continue; }
+        totalPending += remaining;
+        if (inst.due_date < today) { totalOverdue += remaining; overdueList.push(info); }
+        else if (inst.due_date === today) dueTodayList.push(info);
+        else if (inst.due_date <= threeStr) dueSoonList.push(info);
+        if ((inst.remaining_balance || 0) > 0) partialList.push({ ...info, amount: inst.remaining_balance });
+      }
+      let report = 'تقرير Mido اليومي\n' + today + '\n' + '='.repeat(40) + '\n📊 الملخص العام\n' + '-'.repeat(30) + '\n' +
+        'العملاء: ' + customers.length + '\nالخطط: ' + plans.length + '\nالمحصل: ' + fmt(totalPaid) + ' ج.م\nالمستحق: ' + fmt(totalPending) + ' ج.م\n';
+      if (Object.keys(monthTotals).length) {
+        report += '\n📊 تحصيل الشهور\n' + '-'.repeat(30) + '\n';
+        Object.keys(monthTotals).sort().forEach(m => report += m + ': ' + fmt(monthTotals[m]) + ' ج.م\n');
+      }
+      function section(title, list, total, cap) {
+        if (!list.length) return '';
+        let s = '\n' + title + ' (' + list.length + ')\n' + '-'.repeat(30) + '\n' + (total != null ? 'الإجمالي: ' + fmt(total) + ' ج.م\n' : '');
+        list.slice(0, cap).forEach(i => { s += '• ' + i.customer + '\n  المنتج: ' + i.product + '\n  المبلغ: ' + fmt(i.amount) + ' ج.م\n  الاستحقاق: ' + i.due_date + '\n' + (i.phone ? '  الموبايل: ' + i.phone + '\n' : '') + '\n'; });
+        if (list.length > cap) s += '... و ' + (list.length - cap) + ' أخرى\n'; return s;
+      }
+      report += section('🚨 المتأخرات', overdueList.sort((a, b) => a.due_date.localeCompare(b.due_date)), totalOverdue, 20);
+      report += section('📌 مستحق اليوم', dueTodayList, dueTodayList.reduce((s, i) => s + i.amount, 0), 20);
+      report += section('⏰ مستحق خلال 3 أيام', dueSoonList, dueSoonList.reduce((s, i) => s + i.amount, 0), 15);
+      report += section('🟡 رصيد معلق', partialList, partialList.reduce((s, i) => s + i.amount, 0), 10);
+      if (!overdueList.length && !dueTodayList.length && !dueSoonList.length && !partialList.length) report += '\n✅ مفيش أقساط مستحقة أو متأخرة\n';
+      report += '\n' + '='.repeat(40) + '\nMido App';
+      return report;
+    }
+    async function sendDailySummaryToControlNumber() {
+      const controlPhone = getControlNumber();
+      if (!controlPhone) { showToast('❌ من فضلك حدد رقم التحكم الأول'); openControlNumberSettings(); return; }
+      try {
+        showToast('⏳ جاري إعداد التقرير...');
+        const report = await buildDetailedReport();
+        window.open('https://wa.me/' + normalizePhoneForWhatsapp(controlPhone) + '?text=' + encodeURIComponent(report), '_system');
+        showToast('✅ تم فتح واتساب مع التقرير');
+      } catch (err) { showToast('❌ ' + (err.message || err)); }
+    }
+    function openControlNumberSettings() {
+      openModal(`<h2>📱 رقم التحكم (لتقرير اليوم)</h2>
+  <p style="color:var(--muted);font-size:13px;margin-bottom:14px;">الرقم ده هيُستخدم لما تدوس "إرسال تقرير اليوم" — هيبعتلك تقرير مفصل على واتساب.</p>
+  <div class="form-group"><label>رقم موبايلك</label><input type="text" id="control-number-input" placeholder="01xxxxxxxxx" dir="ltr" value="${esc(getControlNumber())}"></div>
+  <div class="modal-close-row"><button class="btn btn-outline" onclick="closeModal()">إلغاء</button>
+  <button class="btn btn-primary" id="save-control-number-btn">حفظ</button></div>`);
+      document.getElementById('save-control-number-btn').addEventListener('click', () => {
+        const val = document.getElementById('control-number-input').value.trim();
+        if (!val) { showToast('❌ اكتب رقم صحيح'); return; }
+        setControlNumber(val); closeModal(); showToast('✅ تم حفظ رقم التحكم');
+      });
+    }
+
+    // ================= الجمعيات =================
+    let circleMemberRows = 0;
+    async function loadCircles() {
+      const el = document.getElementById('view-circles');
+      el.innerHTML = `<div class="panel"><div class="panel-header"><h2>الجمعيات</h2>
+    <button class="btn btn-primary" onclick="openCircleForm()">+ جمعية جديدة</button></div>
+    <div class="panel-body"><div class="row-list" id="circles-list"><p style="padding:20px;color:var(--muted)">جاري التحميل...</p></div></div></div>`;
+      try {
+        const circles = await db.getAll('circles'), members = await db.getAll('circle_members'),
+          payments = await db.getAll('circle_payments'), payouts = await db.getAll('circle_payouts');
+        document.getElementById('circles-list').innerHTML = circles.length ? circles.map((c, idx) => {
+          const cMembers = members.filter(m => m.circle_id == c.id),
+            unpaidCount = payments.filter(p => p.circle_id == c.id && !p.paid).length,
+            pendingPayouts = payouts.filter(p => p.circle_id == c.id && !p.paid_out).length;
+          return `<div class="row-item" style="cursor:pointer;animation-delay:${Math.min(idx * 25, 300)}ms" onclick="openCircleDetail(${c.id})">
+        <div class="row-main"><div class="row-title">${esc(c.name)}</div>
+        <div class="row-sub">${cMembers.length} أعضاء · قسط شهري ${fmt(c.monthly_amount)} ج.م · بدأت ${c.start_date}</div></div>
+        ${unpaidCount > 0 ? `<span class="pill pill-warn">${unpaidCount} دفعة معلقة</span>` : '<span class="pill pill-ok">منتظمة</span>'}
+        ${pendingPayouts > 0 ? `<span class="pill pill-muted">${pendingPayouts} دور لسه ما اتسلمش</span>` : ''}
+      </div>`;
+        }).join('') : emptyRow('مفيش جمعيات لسه، ابدأ بإنشاء جمعية جديدة');
+      } catch (err) { document.getElementById('circles-list').innerHTML = '<p style="color:var(--danger);padding:20px;">' + (err.message || err) + '</p>'; }
+    }
+    function circleMemberRowHtml(idx) {
+      return '<div class="form-row" style="align-items:end;">' +
+        '<div class="form-group"><label>اسم العضو ' + (idx + 1) + '</label><input type="text" class="member-name" placeholder="اسم العضو"></div>' +
+        '<div class="form-group"><label>موبايله</label><input type="text" class="member-phone" placeholder="رقم الموبايل"></div></div>';
+    }
+    function addMemberRow() { circleMemberRows++; document.getElementById('members-container').insertAdjacentHTML('beforeend', circleMemberRowHtml(circleMemberRows - 1)); }
+    function openCircleForm() {
+      circleMemberRows = 0;
+      openModal(`<h2>جمعية جديدة</h2><div id="form-error"></div>
+  <div class="form-group"><label>اسم الجمعية *</label><input id="g-name" type="text" placeholder="مثال: جمعية شهر يناير"></div>
+  <div class="form-row">
+    <div class="form-group"><label>المبلغ الشهري لكل عضو *</label><input id="g-amount" type="number" min="0"></div>
+    <div class="form-group"><label>دورية الدفع (أيام)</label><input id="g-freq" type="number" min="1" value="30"></div>
+  </div>
+  <div class="form-group"><label>تاريخ البداية *</label><input id="g-start" type="date" value="${todayStr()}"></div>
+  <p class="form-hint" style="margin-bottom:10px;">رتب الأعضاء بترتيب استلام الدور.</p>
+  <div id="members-container"></div>
+  <button class="btn btn-outline btn-sm" type="button" onclick="addMemberRow()" style="margin-bottom:14px;">+ إضافة عضو</button>
+  <div class="modal-close-row"><button class="btn btn-outline" onclick="closeModal()">إلغاء</button>
+  <button class="btn btn-primary" id="save-circle-btn">إنشاء الجمعية</button></div>`);
+      addMemberRow(); addMemberRow();
+      document.getElementById('save-circle-btn').addEventListener('click', async () => {
+        const errBox = document.getElementById('form-error');
+        const name = document.getElementById('g-name').value.trim(), monthly_amount = Number(document.getElementById('g-amount').value),
+          frequency_days = parseInt(document.getElementById('g-freq').value, 10) || 30, start_date = document.getElementById('g-start').value;
+        const names = [...document.querySelectorAll('.member-name')], phones = [...document.querySelectorAll('.member-phone')];
+        const membersInputs = names.map((input, i) => ({ name: input.value.trim(), phone: phones[i].value.trim() })).filter(m => m.name);
+        if (!name || !monthly_amount || !start_date || membersInputs.length < 2) {
+          errBox.innerHTML = '<div class="form-error">أكمل اسم الجمعية والمبلغ والتاريخ، وأضف عضوين على الأقل</div>'; return;
+        }
+        try {
+          const circleId = await db.add('circles', { name, monthly_amount, frequency_days, start_date });
+          const memberIds = [];
+          for (let i = 0; i < membersInputs.length; i++) {
+            const mId = await db.add('circle_members', {
+              circle_id: circleId, customer_name: membersInputs[i].name,
+              phone: membersInputs[i].phone, turn_order: i + 1
+            });
+            memberIds.push({ id: mId, name: membersInputs[i].name, turn: i + 1 });
+          }
+          const potAmount = monthly_amount * membersInputs.length;
+          let currDate = new Date(start_date + 'T12:00:00');
+          for (let round = 1; round <= membersInputs.length; round++) {
+            const dueDateStr = toLocalISO(currDate), recipient = memberIds.find(m => m.turn === round);
+            await db.add('circle_payouts', {
+              circle_id: circleId, member_id: recipient ? recipient.id : null,
+              customer_name: recipient ? recipient.name : '', turn_order: round, amount: potAmount, due_date: dueDateStr, paid_out: false
+            });
+            for (const m of memberIds) await db.add('circle_payments', { circle_id: circleId, member_id: m.id, round_number: round, due_date: dueDateStr, paid: false });
+            currDate.setDate(currDate.getDate() + frequency_days);
+          }
+          closeModal(); showToast('تم إنشاء الجمعية بنجاح'); loadCircles();
+        } catch (err) { errBox.innerHTML = '<div class="form-error">' + (err.message || err) + '</div>'; }
+      });
+    }
+    async function openCircleDetail(id) {
+      const c = await db.getById('circles', id), allMembers = await db.getAll('circle_members'),
+        cMembers = allMembers.filter(m => m.circle_id == id).sort((a, b) => a.turn_order - b.turn_order),
+        allPayments = await db.getAll('circle_payments'), cPayments = allPayments.filter(p => p.circle_id == id),
+        allPayouts = await db.getAll('circle_payouts'), cPayouts = allPayouts.filter(p => p.circle_id == id).sort((a, b) => a.turn_order - b.turn_order),
+        today = todayStr();
+      const memberCols = cMembers.map(m => '<th><span class="turn-badge">' + m.turn_order + '</span><br>' + esc(m.customer_name) + '</th>').join('');
+      const rounds = [...new Set(cPayments.map(p => p.round_number))].sort((a, b) => a - b);
+      const paymentRows = rounds.map(round => {
+        const cells = cMembers.map(m => {
+          const pay = cPayments.find(p => p.member_id == m.id && p.round_number == round);
+          if (!pay) return '<td></td>';
+          const isOverdue = !pay.paid && pay.due_date < today, cls = pay.paid ? 'paid' : (isOverdue ? 'overdue-cell' : '');
+          return '<td><button class="pay-dot ' + cls + '" onclick="toggleCirclePayment(' + pay.id + ',' + pay.paid + ',' + id + ')" title="' + pay.due_date + '">' + (pay.paid ? '✓' : '·') + '</button></td>';
+        }).join('');
+        const dueDate = (cPayments.find(p => p.round_number == round) || {}).due_date || '';
+        return '<tr><td class="member-name">دور ' + round + ' (' + dueDate + ')</td>' + cells + '</tr>';
+      }).join('');
+      const payoutsHtml = cPayouts.map(po => `
+    <div class="payout-row"><span class="turn-badge">${po.turn_order}</span>
+      <div class="row-main"><div class="row-title">${esc(po.customer_name)}</div>
+      <div class="row-sub">استحقاق الدور: ${po.due_date} · قيمة الدور ${fmt(po.amount)} ج.م</div></div>
+      <span class="pill ${po.paid_out ? 'pill-ok' : (po.due_date < today ? 'pill-warn' : 'pill-muted')}">${po.paid_out ? 'اتسلم' : (po.due_date < today ? 'مستحق التسليم' : 'لسه')}</span>
+      <button class="btn ${po.paid_out ? 'btn-outline' : 'btn-primary'} btn-sm" onclick="toggleCirclePayout(${po.id},${po.paid_out},${id})">${po.paid_out ? 'تراجع' : 'تسليم الدور'}</button>
+    </div>`).join('');
+      openModal(`<h2>${esc(c.name)}</h2>
+  <p style="color:var(--muted);font-size:13px;margin-bottom:16px;">${cMembers.length} أعضاء · قسط شهري ${fmt(c.monthly_amount)} ج.م · بدأت ${c.start_date}</p>
+  <h3 style="font-size:14px;margin-bottom:10px;">جدول تحصيل الدفعات</h3>
+  <div style="overflow-x:auto;margin-bottom:20px;"><table class="round-table">
+    <thead><tr><th></th>${memberCols}</tr></thead><tbody>${paymentRows}</tbody></table></div>
+  <h3 style="font-size:14px;margin-bottom:10px;">جدول استلام الدور</h3>
+  <div style="border:1px solid var(--border);border-radius:9px;padding:0 14px;max-height:220px;overflow-y:auto;">${payoutsHtml}</div>
+  <div class="modal-close-row"><button class="btn btn-danger-text" onclick="deleteCircle(${id})">حذف الجمعية</button>
+  <button class="btn btn-outline" onclick="closeModal()">إغلاق</button></div>`);
+    }
+    async function toggleCirclePayment(id, currentlyPaid, circleId) {
+      try {
+        const pay = await db.getById('circle_payments', id); pay.paid = !currentlyPaid;
+        await db.update('circle_payments', pay); openCircleDetail(circleId);
+      } catch (err) { showToast(err.message || err); }
+    }
+    async function toggleCirclePayout(id, currentlyPaidOut, circleId) {
+      try {
+        const po = await db.getById('circle_payouts', id); po.paid_out = !currentlyPaidOut;
+        await db.update('circle_payouts', po); openCircleDetail(circleId);
+      } catch (err) { showToast(err.message || err); }
+    }
+    async function deleteCircle(id) {
+      if (!confirm('متأكد إنك عايز تحذف الجمعية دي؟')) return;
+      try {
+        await db.delete('circles', id);
+        for (const s of ['circle_members', 'circle_payments', 'circle_payouts']) {
+          const all = await db.getAll(s); for (const item of all.filter(x => x.circle_id == id)) await db.delete(s, item.id);
+        }
+        closeModal(); showToast('تم حذف الجمعية'); loadCircles();
+      } catch (err) { showToast(err.message || err); }
+    }
+
+    // ================= النسخ الاحتياطي =================
+    function hasCapacitorFS() { return !!(window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Filesystem); }
+    function openFileDB() {
+      return new Promise((resolve, reject) => {
+        const req = indexedDB.open('MidoFileStore', 1);
+        req.onupgradeneeded = e => { const d = e.target.result; if (!d.objectStoreNames.contains('files')) d.createObjectStore('files', { keyPath: 'name' }); };
+        req.onsuccess = () => resolve(req.result); req.onerror = () => {
+          // لو حتى قاعدة الملفات مش شغالة، نرجع كائن وهمي بيستخدم localStorage
+          resolve(null);
+        };
+      });
+    }
+    async function saveFileToApp(fileName, data) {
+      try {
+        // نحفظ دايماً في localStorage كاحتياطي مضمون
+        try {
+          const idx = JSON.parse(localStorage.getItem('mido_file_index') || '[]');
+          if (!idx.find(f => f.name === fileName)) idx.push({ name: fileName, date: todayStr(), size: data.length });
+          localStorage.setItem('mido_file_index', JSON.stringify(idx));
+          localStorage.setItem('mido_file_' + fileName, data);
+        } catch (e) { console.warn('تعذر حفظ الملف في localStorage', e); }
+        const d = await openFileDB();
+        if (d) {
+          const tx = d.transaction('files', 'readwrite');
+          tx.objectStore('files').put({ name: fileName, data, date: todayStr(), size: data.length });
+          await new Promise(res => tx.oncomplete = res);
+        }
+        return true;
+      } catch (err) { console.log('فشل حفظ الملف:', err); return false; }
+    }
+    async function getFileFromApp(fileName) {
+      try {
+        const d = await openFileDB();
+        if (d) {
+          const r = await new Promise(res => { const q = d.transaction('files', 'readonly').objectStore('files').get(fileName); q.onsuccess = () => res(q.result); q.onerror = () => res(null); });
+          if (r) return r;
+        }
+        const ls = localStorage.getItem('mido_file_' + fileName);
+        if (ls) return { name: fileName, data: ls };
+        return null;
+      } catch (err) { return null; }
+    }
+    async function listSavedFiles() {
+      const out = [];
+      try { const idx = JSON.parse(localStorage.getItem('mido_file_index') || '[]'); idx.forEach(f => out.push(f)); } catch (e) { }
+      try {
+        const d = await openFileDB(); if (d) {
+          const files = await new Promise(res => { const r = d.transaction('files', 'readonly').objectStore('files').getAll(); r.onsuccess = () => res(r.result || []); r.onerror = () => res([]); });
+          files.forEach(f => { if (!out.find(o => o.name === f.name)) out.push({ name: f.name, date: f.date, size: f.size }); });
+        }
+      } catch (e) { }
+      return out;
+    }
+    async function collectBackupData() {
+      return {
+        customers: await db.getAll('customers'), plans: await db.getAll('plans'), installments: await db.getAll('installments'),
+        circles: await db.getAll('circles'), circle_members: await db.getAll('circle_members'),
+        circle_payments: await db.getAll('circle_payments'), circle_payouts: await db.getAll('circle_payouts'),
+        collection_months: await db.getAll('collection_months'), exported_at: new Date().toISOString()
+      };
+    }
+    async function doBackupExportAndShare() {
+      const data = await collectBackupData(), jsonStr = JSON.stringify(data, null, 2), fileName = 'Mido_Backup_' + todayStr() + '.mido';
+      await saveFileToApp(fileName, jsonStr);
+      if (hasCapacitorFS()) {
+        try {
+          const { Filesystem, Directory } = window.Capacitor.Plugins;
+          const write = await Filesystem.writeFile({ path: fileName, data: jsonStr, directory: Directory.Cache, encoding: 'utf8' });
+          if (window.Capacitor.Plugins.Share) {
+            await window.Capacitor.Plugins.Share.share({ title: 'نسخة احتياطية من Mido', text: 'ملف النسخة الاحتياطية - ' + todayStr(), url: write.uri });
+            showToast('✅ اختار مكان الحفظ');
+          } else showToast('✅ تم حفظ الملف: ' + fileName);
+          return;
+        } catch (err) { console.log('Capacitor فشل:', err); }
+      }
+      const file = new File([jsonStr], fileName, { type: 'application/json' });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({ files: [file], title: 'نسخة احتياطية من Mido', text: 'ملف النسخة الاحتياطية - ' + todayStr() });
+          showToast('✅ تم مشاركة النسخة الاحتياطية'); return;
+        }
+        catch (err) { if (err.name === 'AbortError') { showToast('❌ تم إلغاء المشاركة'); return; } }
+      }
+      const blob = new Blob([jsonStr], { type: 'application/json' }), url = URL.createObjectURL(blob), a = document.createElement('a');
+      a.href = url; a.download = fileName; a.style.display = 'none'; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1500); showToast('✅ تم تنزيل النسخة الاحتياطية');
+    }
+    document.getElementById('backup-btn').addEventListener('click', async () => { showToast('⏳ جاري التجهيز...'); try { await doBackupExportAndShare(); } catch (err) { showToast('❌ ' + (err.message || err)); } closeDrawer(); });
+    document.getElementById('share-backup-btn').addEventListener('click', async () => { showToast('⏳ جاري التجهيز...'); try { await doBackupExportAndShare(); } catch (err) { showToast('❌ ' + (err.message || err)); } closeDrawer(); });
+    async function showSavedFiles() {
+      try {
+        const files = await listSavedFiles();
+        if (!files.length) { showToast('📂 مفيش ملفات نسخ احتياطي'); return; }
+        let html = '<h2>📂 الملفات المحفوظة</h2><p style="color:var(--muted);font-size:13px;margin-bottom:12px;">اختر ملف لاسترجاع البيانات منه:</p><div style="max-height:350px;overflow-y:auto;">';
+        files.forEach(f => {
+          html += '<div class="row-item"><div class="row-main"><div class="row-title">📊 ' + esc(f.name) + '</div>' +
+            '<div class="row-sub">التاريخ: ' + (f.date || 'غير معروف') + ' · الحجم: ' + ((f.size || 0) / 1024).toFixed(1) + ' KB</div></div>' +
+            '<button class="btn btn-primary btn-sm" onclick="restoreFromApp(\'' + esc(f.name) + '\')">🔄 استرجاع</button>' +
+            '<button class="btn btn-danger-text btn-sm" onclick="deleteSavedFile(\'' + esc(f.name) + '\')">🗑️</button></div>';
+        });
+        html += '</div><div class="modal-close-row"><button class="btn btn-outline" onclick="closeModal()">إغلاق</button></div>';
+        openModal(html);
+      } catch (err) { showToast('❌ ' + err.message); }
+    }
+    async function restoreData(data) {
+      if (!data.customers || !data.plans) throw new Error('الملف غير صالح');
+      await db.clearAll();
+      for (const c of data.customers || []) await db.add('customers', c);
+      for (const p of data.plans || []) await db.add('plans', p);
+      for (const i of data.installments || []) await db.add('installments', i);
+      for (const cr of data.circles || []) await db.add('circles', cr);
+      for (const cm of data.circle_members || []) await db.add('circle_members', cm);
+      for (const cp of data.circle_payments || []) await db.add('circle_payments', cp);
+      for (const cpo of data.circle_payouts || []) await db.add('circle_payouts', cpo);
+      for (const col of data.collection_months || []) await db.add('collection_months', col);
+    }
+    async function restoreFromApp(fileName) {
+      if (!confirm('⚠️ استرجاع البيانات من "' + fileName + '"؟ سيتم استبدال البيانات الحالية.')) return;
+      try {
+        showToast('⏳ جاري الاسترجاع...');
+        const file = await getFileFromApp(fileName);
+        if (!file) { showToast('❌ الملف غير موجود'); return; }
+        await restoreData(JSON.parse(file.data));
+        showToast('✅ تم استرجاع البيانات بنجاح!'); closeModal(); switchView(state.view); await updateCollectionBadge();
+      } catch (err) { showToast('❌ ' + err.message); }
+    }
+    async function deleteSavedFile(fileName) {
+      if (!confirm('⚠️ حذف الملف "' + fileName + '"؟')) return;
+      try {
+        try {
+          localStorage.removeItem('mido_file_' + fileName);
+          const idx = JSON.parse(localStorage.getItem('mido_file_index') || '[]').filter(f => f.name !== fileName);
+          localStorage.setItem('mido_file_index', JSON.stringify(idx));
+        } catch (e) { }
+        const d = await openFileDB();
+        if (d) { const tx = d.transaction('files', 'readwrite'); tx.objectStore('files').delete(fileName); await new Promise(res => tx.oncomplete = res); }
+        showToast('✅ تم حذف الملف'); showSavedFiles();
+      } catch (err) { showToast('❌ ' + err.message); }
+    }
+    document.getElementById('restore-btn').addEventListener('click', () => { document.getElementById('import-file').click(); closeDrawer(); });
+    document.getElementById('import-file').addEventListener('change', e => {
+      const file = e.target.files[0]; if (!file) return;
+      const reader = new FileReader();
+      reader.onload = async evt => {
+        try {
+          if (!confirm('⚠️ استرجاع البيانات سيمحو البيانات الحالية. هل أنت متأكد؟')) return;
+          showToast('⏳ جاري الاسترجاع...');
+          await restoreData(JSON.parse(evt.target.result));
+          showToast('✅ تم استرجاع البيانات بنجاح!'); switchView(state.view); await updateCollectionBadge();
+        } catch (err) { alert('❌ فشل استرجاع الملف: ' + err.message); }
+      };
+      reader.readAsText(file); e.target.value = '';
+    });
+    document.getElementById('saved-files-btn').addEventListener('click', () => { showSavedFiles(); closeDrawer(); });
+    document.getElementById('control-number-btn').addEventListener('click', () => { openControlNumberSettings(); closeDrawer(); });
+    document.getElementById('daily-summary-btn').addEventListener('click', () => { sendDailySummaryToControlNumber(); closeDrawer(); });
+
+    // ================= البدء =================
+    document.getElementById('topbar-date').textContent = new Date().toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    checkActivation();
+    if (sessionStorage.getItem('mido_admin_logged') === 'true') {
+      loadDashboard(); setTimeout(checkDueInstallments, 3000); setTimeout(updateCollectionBadge, 1000);
+    }
+  </script>
+</body>
+
+</html>
